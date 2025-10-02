@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Kontak</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <a href="index.html">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="connections.html">
+        <i class="fas fa-link"></i>
+        <span>Koneksi</span>
+      </a>
+      <a href="contacts.html" class="active">
+        <i class="fas fa-address-book"></i>
+        <span>Kontak</span>
+      </a>
+      <a href="messages.html">
+        <i class="fas fa-paper-plane"></i>
+        <span>Pesan</span>
+      </a>
+      <a href="templates.html">
+        <i class="fas fa-file-alt"></i>
+        <span>Template</span>
+      </a>
+      <a href="history.html">
+        <i class="fas fa-history"></i>
+        <span>Riwayat</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Kelola Kontak</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Stats -->
+      <div class="contact-stats">
+        <div class="stat-box">
+          <i class="fas fa-users"></i>
+          <div>
+            <h3 id="totalContacts">0</h3>
+            <p>Total Kontak</p>
+          </div>
+        </div>
+        <div class="stat-box">
+          <i class="fas fa-layer-group"></i>
+          <div>
+            <h3 id="totalGroups">0</h3>
+            <p>Grup Kontak</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Import/Export Section -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-upload"></i> Import & Export Kontak</h2>
+        </div>
+        <div class="card-body">
+          <div class="import-export-grid">
+            <!-- Import CSV -->
+            <div class="upload-box">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <h3>Import dari CSV</h3>
+              <p>Upload file CSV berisi nomor WhatsApp</p>
+              <input type="file" id="csvFile" accept=".csv,.txt" onchange="handleImportCSV(event)" style="display: none;">
+              <button class="btn btn-primary" onclick="document.getElementById('csvFile').click()">
+                <i class="fas fa-file-upload"></i> Pilih File CSV
+              </button>
+              <a href="#" onclick="downloadSampleCSV()" class="text-link">Download contoh CSV</a>
+            </div>
+
+            <!-- Export CSV -->
+            <div class="upload-box">
+              <i class="fas fa-download"></i>
+              <h3>Export ke CSV</h3>
+              <p>Download semua kontak sebagai CSV</p>
+              <button class="btn btn-secondary" onclick="exportContactsCSV()">
+                <i class="fas fa-file-download"></i> Export CSV
+              </button>
+            </div>
+
+            <!-- Add Manual -->
+            <div class="upload-box">
+              <i class="fas fa-user-plus"></i>
+              <h3>Tambah Manual</h3>
+              <p>Input nomor WhatsApp secara manual</p>
+              <button class="btn btn-success" onclick="showAddContactModal()">
+                <i class="fas fa-plus"></i> Tambah Kontak
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Groups Section -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-layer-group"></i> Grup Kontak</h2>
+          <button class="btn btn-primary" onclick="showCreateGroupModal()">
+            <i class="fas fa-plus"></i> <span>Buat Grup</span>
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="groupsList" class="groups-list">
+            <p class="text-muted">Belum ada grup. Buat grup untuk mengorganisir kontak.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacts List -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-users"></i> Daftar Kontak</h2>
+          <div class="header-actions">
+            <input type="search" id="searchContact" placeholder="Cari kontak..." class="search-input">
+            <select id="filterGroup" class="form-control" style="width: 200px;" onchange="filterContacts()">
+              <option value="">Semua Grup</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="contactsList" class="contacts-table-container">
+            <p class="text-muted">Belum ada kontak. Import CSV atau tambah manual untuk memulai.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Contact Modal -->
+  <div id="addContactModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Tambah Kontak</h2>
+        <span class="close" onclick="closeModal('addContactModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label><i class="fas fa-phone"></i> Nomor WhatsApp</label>
+          <input type="tel" id="contactNumber" placeholder="6281234567890" class="form-control">
+          <small>Format: 62xxxxxxxxxx (tanpa +, tanpa spasi)</small>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Nama (Opsional)</label>
+          <input type="text" id="contactName" placeholder="Nama kontak" class="form-control">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-layer-group"></i> Grup</label>
+          <select id="contactGroup" class="form-control">
+            <option value="">Tanpa Grup</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('addContactModal')">Batal</button>
+        <button class="btn btn-primary" onclick="saveContact()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Group Modal -->
+  <div id="createGroupModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Buat Grup Kontak</h2>
+        <span class="close" onclick="closeModal('createGroupModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label><i class="fas fa-tag"></i> Nama Grup</label>
+          <input type="text" id="groupName" placeholder="contoh: Pelanggan VIP" class="form-control">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-palette"></i> Warna</label>
+          <div class="color-picker">
+            <input type="color" id="groupColor" value="#667eea" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('createGroupModal')">Batal</button>
+        <button class="btn btn-primary" onclick="saveGroup()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="contacts.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

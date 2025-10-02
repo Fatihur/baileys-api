@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug - Test API</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #0f0;
+    }
+    .test {
+      margin: 15px 0;
+      padding: 15px;
+      background: #2a2a2a;
+      border-left: 4px solid #0f0;
+    }
+    .error {
+      border-left-color: #f00;
+      color: #f00;
+    }
+    button {
+      padding: 10px 20px;
+      background: #0f0;
+      border: none;
+      color: #000;
+      cursor: pointer;
+      margin: 5px;
+    }
+    pre {
+      background: #000;
+      padding: 10px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 API Debug Tool</h1>
+  
+  <div class="test">
+    <h3>1. Test Server Connection</h3>
+    <button onclick="testServer()">Test Server</button>
+    <div id="serverResult"></div>
+  </div>
+
+  <div class="test">
+    <h3>2. Test API Key</h3>
+    <button onclick="testApiKey()">Test API Key</button>
+    <div id="apiKeyResult"></div>
+  </div>
+
+  <div class="test">
+    <h3>3. Test Get Sessions</h3>
+    <button onclick="testGetSessions()">Get Sessions</button>
+    <div id="sessionsResult"></div>
+  </div>
+
+  <div class="test">
+    <h3>4. Test Create Session</h3>
+    <input type="text" id="testSessionId" placeholder="test-session" style="padding: 10px; margin: 5px;">
+    <button onclick="testCreateSession()">Create Session</button>
+    <div id="createResult"></div>
+  </div>
+
+  <div class="test">
+    <h3>Configuration</h3>
+    <pre id="config"></pre>
+  </div>
+
+  <script>
+    const API_CONFIG = {
+      baseURL: 'http://localhost:3000',
+      apiKey: 'baileys-gateway-secret-key-2024'
+    };
+
+    document.getElementById('config').textContent = JSON.stringify(API_CONFIG, null, 2);
+
+    async function testServer() {
+      const result = document.getElementById('serverResult');
+      result.innerHTML = '<p>Testing...</p>';
+      
+      try {
+        const response = await fetch(API_CONFIG.baseURL);
+        const data = await response.json();
+        
+        result.innerHTML = `
+          <p style="color: #0f0;">✓ Server is running!</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+      } catch (error) {
+        result.innerHTML = `
+          <p style="color: #f00;">✗ Server connection failed!</p>
+          <pre>${error.message}</pre>
+          <p>Make sure server is running: npm run dev</p>
+        `;
+      }
+    }
+
+    async function testApiKey() {
+      const result = document.getElementById('apiKeyResult');
+      result.innerHTML = '<p>Testing...</p>';
+      
+      try {
+        const response = await fetch(`${API_CONFIG.baseURL}/api/sessions`, {
+          headers: {
+            'X-API-KEY': API_CONFIG.apiKey
+          }
+        });
+        
+        if (response.status === 401 || response.status === 403) {
+          result.innerHTML = `
+            <p style="color: #f00;">✗ API Key is invalid!</p>
+            <p>Status: ${response.status}</p>
+            <p>Check API_KEY in .env file</p>
+          `;
+        } else {
+          const data = await response.json();
+          result.innerHTML = `
+            <p style="color: #0f0;">✓ API Key is valid!</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+        }
+      } catch (error) {
+        result.innerHTML = `
+          <p style="color: #f00;">✗ Request failed!</p>
+          <pre>${error.message}</pre>
+        `;
+      }
+    }
+
+    async function testGetSessions() {
+      const result = document.getElementById('sessionsResult');
+      result.innerHTML = '<p>Testing...</p>';
+      
+      try {
+        const response = await fetch(`${API_CONFIG.baseURL}/api/sessions`, {
+          headers: {
+            'X-API-KEY': API_CONFIG.apiKey
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          result.innerHTML = `
+            <p style="color: #0f0;">✓ Sessions loaded!</p>
+            <p>Found: ${data.sessions?.length || 0} sessions</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+        } else {
+          result.innerHTML = `
+            <p style="color: #f00;">✗ Failed to get sessions!</p>
+            <p>Status: ${response.status}</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+        }
+      } catch (error) {
+        result.innerHTML = `
+          <p style="color: #f00;">✗ Request failed!</p>
+          <pre>${error.message}</pre>
+        `;
+      }
+    }
+
+    async function testCreateSession() {
+      const sessionId = document.getElementById('testSessionId').value || 'test-session';
+      const result = document.getElementById('createResult');
+      result.innerHTML = '<p>Creating...</p>';
+      
+      try {
+        const response = await fetch(`${API_CONFIG.baseURL}/api/session/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': API_CONFIG.apiKey
+          },
+          body: JSON.stringify({ sessionId })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          result.innerHTML = `
+            <p style="color: #0f0;">✓ Session created!</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+            <p>Open QR: <a href="/qr/${sessionId}" target="_blank" style="color: #0ff;">/qr/${sessionId}</a></p>
+          `;
+        } else {
+          result.innerHTML = `
+            <p style="color: #f00;">✗ Failed to create session!</p>
+            <p>Status: ${response.status}</p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `;
+        }
+      } catch (error) {
+        result.innerHTML = `
+          <p style="color: #f00;">✗ Request failed!</p>
+          <pre>${error.message}</pre>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

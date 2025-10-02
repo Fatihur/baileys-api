@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Koneksi WhatsApp</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dashboard-styles.css">
+  <link rel="stylesheet" href="connections-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <a href="index.html">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="connections.html" class="active">
+        <i class="fas fa-link"></i>
+        <span>Koneksi</span>
+      </a>
+      <a href="contacts.html">
+        <i class="fas fa-address-book"></i>
+        <span>Kontak</span>
+      </a>
+      <a href="messages.html">
+        <i class="fas fa-paper-plane"></i>
+        <span>Pesan</span>
+      </a>
+      <a href="templates.html">
+        <i class="fas fa-file-alt"></i>
+        <span>Template</span>
+      </a>
+      <a href="history.html">
+        <i class="fas fa-history"></i>
+        <span>Riwayat</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Kelola Koneksi</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Info Card -->
+      <div class="info-banner">
+        <i class="fas fa-info-circle"></i>
+        <div>
+          <strong>Kelola Koneksi WhatsApp</strong>
+          <p>Buat dan kelola koneksi WhatsApp untuk mengirim pesan blast. Aktifkan/nonaktifkan koneksi dengan toggle di bawah.</p>
+        </div>
+      </div>
+
+      <!-- Sessions Grid -->
+      <div class="card">
+        <div class="card-header">
+          <h2>
+            <i class="fas fa-link"></i> Koneksi WhatsApp
+            <span class="badge badge-primary" id="sessionCount">0</span>
+          </h2>
+          <button class="btn btn-primary" onclick="showCreateSessionModal()">
+            <i class="fas fa-plus"></i> <span>Tambah Koneksi</span>
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="sessionsList" class="sessions-grid">
+            <p class="text-muted">Loading koneksi...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Session Modal -->
+  <div id="createSessionModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Tambah Koneksi Baru</h2>
+        <span class="close" onclick="closeModal('createSessionModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label><i class="fas fa-tag"></i> Nama Koneksi</label>
+          <input type="text" id="sessionName" placeholder="contoh: whatsapp-utama" class="form-control">
+          <small>Gunakan huruf kecil, angka, dan tanda hubung (-)</small>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-webhook"></i> Webhook URL (Opsional)</label>
+          <input type="url" id="webhookUrl" placeholder="https://your-webhook.com/receive" class="form-control">
+          <small>URL untuk menerima notifikasi pesan masuk</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('createSessionModal')">Batal</button>
+        <button class="btn btn-primary" onclick="createSession()">
+          <i class="fas fa-plus"></i> Buat Koneksi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Modal -->
+  <div id="qrModal" class="modal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2><i class="fas fa-qrcode"></i> Scan QR Code</h2>
+        <span class="close" onclick="closeModal('qrModal')">&times;</span>
+      </div>
+      <div class="modal-body text-center">
+        <div id="qrStatus" class="qr-status">
+          <div class="spinner"></div>
+          <p>Generating QR Code...</p>
+        </div>
+        <div id="qrCodeContainer" style="display: none;">
+          <img id="qrCodeImage" src="" alt="QR Code" class="qr-image">
+          <div class="instructions">
+            <h3><i class="fas fa-mobile-alt"></i> Cara Scan QR Code:</h3>
+            <ol>
+              <li>Buka WhatsApp di HP Anda</li>
+              <li>Tap <strong>Menu</strong> atau <strong>Settings</strong></li>
+              <li>Tap <strong>Linked Devices</strong></li>
+              <li>Tap <strong>Link a Device</strong></li>
+              <li>Arahkan kamera HP ke QR code ini</li>
+            </ol>
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i>
+              Halaman akan refresh otomatis setiap 3 detik. QR code kadaluarsa setelah 30 detik.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="connections.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

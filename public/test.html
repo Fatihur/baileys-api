@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Test</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .result { padding: 15px; margin: 10px 0; background: #f0f0f0; border-radius: 8px; }
+    .error { background: #ffebee; color: #c62828; }
+    .success { background: #e8f5e9; color: #2e7d32; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>API Quick Test</h1>
+  
+  <button onclick="test1()">Test 1: Server Root</button>
+  <button onclick="test2()">Test 2: Get Sessions</button>
+  <button onclick="test3()">Test 3: Create Session</button>
+  
+  <div id="output"></div>
+
+  <script>
+    const API_KEY = 'baileys-gateway-secret-key-2024';
+    const BASE_URL = 'http://localhost:3000';
+
+    function log(message, isError = false) {
+      const output = document.getElementById('output');
+      const div = document.createElement('div');
+      div.className = 'result ' + (isError ? 'error' : 'success');
+      div.innerHTML = `<pre>${message}</pre>`;
+      output.insertBefore(div, output.firstChild);
+    }
+
+    async function test1() {
+      try {
+        log('Testing server root...');
+        const response = await fetch(BASE_URL);
+        const data = await response.json();
+        log('✓ Server is running!\n' + JSON.stringify(data, null, 2));
+      } catch (error) {
+        log('✗ Error: ' + error.message, true);
+      }
+    }
+
+    async function test2() {
+      try {
+        log('Getting sessions...');
+        const response = await fetch(`${BASE_URL}/api/sessions`, {
+          headers: { 'X-API-KEY': API_KEY }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          log('✓ Sessions loaded!\nCount: ' + (data.sessions?.length || 0) + '\n' + JSON.stringify(data, null, 2));
+        } else {
+          log('✗ API Error (Status ' + response.status + '):\n' + JSON.stringify(data, null, 2), true);
+        }
+      } catch (error) {
+        log('✗ Error: ' + error.message + '\n\nMake sure:\n1. Server is running (npm run dev)\n2. Port 3000 is correct\n3. No CORS issues', true);
+      }
+    }
+
+    async function test3() {
+      try {
+        const sessionId = 'test-' + Date.now();
+        log('Creating session: ' + sessionId);
+        
+        const response = await fetch(`${BASE_URL}/api/session/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-KEY': API_KEY
+          },
+          body: JSON.stringify({ sessionId })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          log('✓ Session created!\n' + JSON.stringify(data, null, 2) + '\n\nOpen QR: ' + BASE_URL + '/qr/' + sessionId);
+        } else {
+          log('✗ Failed (Status ' + response.status + '):\n' + JSON.stringify(data, null, 2), true);
+        }
+      } catch (error) {
+        log('✗ Error: ' + error.message, true);
+      }
+    }
+
+    // Auto test on load
+    setTimeout(() => {
+      log('Running auto-test...');
+      test1();
+      setTimeout(test2, 1000);
+    }, 500);
+  </script>
+</body>
+</html>

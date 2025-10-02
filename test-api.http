@@ -1,0 +1,39 @@
+### Test Baileys WhatsApp Gateway API
+
+### 1. Check API Status
+GET http://localhost:3000/
+
+### 2. Create Session
+POST http://localhost:3000/api/session/create
+Content-Type: application/json
+X-API-KEY: baileys-gateway-secret-key-2024
+
+{
+  "sessionId": "test-session"
+}
+
+### 3. Get Session Status (JSON)
+GET http://localhost:3000/api/session/test-session/status
+X-API-KEY: baileys-gateway-secret-key-2024
+
+### 4. View QR Code in Browser
+# Open in browser: http://localhost:3000/qr/test-session
+
+### 5. Send Text Message (after connected)
+POST http://localhost:3000/api/message/text
+Content-Type: application/json
+X-API-KEY: baileys-gateway-secret-key-2024
+
+{
+  "sessionId": "test-session",
+  "to": "6281234567890",
+  "message": "Hello from API!"
+}
+
+### 6. Get All Sessions
+GET http://localhost:3000/api/sessions
+X-API-KEY: baileys-gateway-secret-key-2024
+
+### 7. Delete Session
+DELETE http://localhost:3000/api/session/test-session
+X-API-KEY: baileys-gateway-secret-key-2024

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Blast - History</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <a href="index.html">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="connections.html">
+        <i class="fas fa-link"></i>
+        <span>Koneksi</span>
+      </a>
+      <a href="contacts.html">
+        <i class="fas fa-address-book"></i>
+        <span>Kontak</span>
+      </a>
+      <a href="messages.html">
+        <i class="fas fa-paper-plane"></i>
+        <span>Pesan</span>
+      </a>
+      <a href="templates.html">
+        <i class="fas fa-file-alt"></i>
+        <span>Template</span>
+      </a>
+      <a href="history.html" class="active">
+        <i class="fas fa-history"></i>
+        <span>Riwayat</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Riwayat Blast</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-history"></i> Recent Blasts</h2>
+          <button class="btn btn-danger" onclick="clearHistory()">
+            <i class="fas fa-trash"></i> Clear History
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="historyList">
+            <p class="text-muted">No history yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      text-align: left;
+      padding: 12px;
+      background: var(--light);
+      font-weight: 600;
+      font-size: 14px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .history-table td {
+      padding: 15px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-table tr:hover {
+      background: var(--light);
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+  </style>
+
+  <script src="config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadHistory();
+    });
+
+    function loadHistory() {
+      const history = storage.get('blastHistory') || [];
+      renderHistory(history);
+    }
+
+    function renderHistory(history) {
+      const container = document.getElementById('historyList');
+      
+      if (history.length === 0) {
+        container.innerHTML = '<p class="text-muted">No history yet</p>';
+        return;
+      }
+
+      container.innerHTML = `
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Session</th>
+              <th>Type</th>
+              <th>Total</th>
+              <th>Sent</th>
+              <th>Failed</th>
+              <th>Success Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${history.map(item => {
+              const date = new Date(item.date);
+              const successRate = ((item.sent / item.total) * 100).toFixed(1);
+              const badgeClass = successRate >= 90 ? 'badge-success' : successRate >= 70 ? 'badge-warning' : 'badge-danger';
+              
+              return `
+                <tr>
+                  <td>${date.toLocaleString()}</td>
+                  <td><strong>${item.sessionId}</strong></td>
+                  <td><span class="badge badge-success">${item.messageType}</span></td>
+                  <td>${item.total}</td>
+                  <td style="color: var(--success);">${item.sent}</td>
+                  <td style="color: var(--danger);">${item.failed}</td>
+                  <td><span class="badge ${badgeClass}">${successRate}%</span></td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function clearHistory() {
+      if (!confirm('Are you sure you want to clear all history?')) return;
+      
+      storage.remove('blastHistory');
+      showNotification('History cleared');
+      loadHistory();
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>
