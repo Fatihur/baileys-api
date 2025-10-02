@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blacklist & Whitelist Management</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="sidebar-categories.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <!-- Main -->
+      <div class="nav-category" id="catMain">
+        <div class="category-header" onclick="toggleCategory('catMain')" data-tooltip="Main">
+          <div class="category-title">
+            <i class="fas fa-home"></i>
+            <span>Main</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="nav-category" id="catWhatsApp">
+        <div class="category-header" onclick="toggleCategory('catWhatsApp')" data-tooltip="WhatsApp">
+          <div class="category-title">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="connections.html">
+            <i class="fas fa-link"></i>
+            <span>Koneksi</span>
+          </a>
+          <a href="messages.html">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pesan</span>
+          </a>
+          <a href="scheduled.html">
+            <i class="fas fa-clock"></i>
+            <span>Scheduled</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Management -->
+      <div class="nav-category" id="catManagement">
+        <div class="category-header" onclick="toggleCategory('catManagement')" data-tooltip="Management">
+          <div class="category-title">
+            <i class="fas fa-tasks"></i>
+            <span>Management</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="contacts.html">
+            <i class="fas fa-address-book"></i>
+            <span>Kontak</span>
+          </a>
+          <a href="templates.html">
+            <i class="fas fa-file-alt"></i>
+            <span>Template</span>
+          </a>
+          <a href="blacklist.html" class="active">
+            <i class="fas fa-ban"></i>
+            <span>Blacklist</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-category" id="catReports">
+        <div class="category-header" onclick="toggleCategory('catReports')" data-tooltip="Reports">
+          <div class="category-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="history.html">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="nav-category" id="catSystem">
+        <div class="category-header" onclick="toggleCategory('catSystem')" data-tooltip="System">
+          <div class="category-title">
+            <i class="fas fa-cog"></i>
+            <span>System</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="settings.html">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Blacklist & Whitelist</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+            <i class="fas fa-ban"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="blacklistCount">0</h3>
+            <p>Blacklisted</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="whitelistCount">0</h3>
+            <p>Whitelisted</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="protectedCount">0</h3>
+            <p>Total Protected</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-grid">
+        <!-- Blacklist Section -->
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-ban"></i> Blacklist (Blocked)</h2>
+            <button class="btn btn-danger" onclick="showAddBlacklistModal()">
+              <i class="fas fa-plus"></i> Add Number
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="search-box" style="margin-bottom: 15px;">
+              <input type="text" id="searchBlacklist" class="form-control" placeholder="Search blacklist..." onkeyup="filterBlacklist()">
+            </div>
+            <div id="blacklistTable"></div>
+          </div>
+        </div>
+
+        <!-- Whitelist Section -->
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-check-circle"></i> Whitelist (Allowed)</h2>
+            <button class="btn btn-success" onclick="showAddWhitelistModal()">
+              <i class="fas fa-plus"></i> Add Number
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="search-box" style="margin-bottom: 15px;">
+              <input type="text" id="searchWhitelist" class="form-control" placeholder="Search whitelist..." onkeyup="filterWhitelist()">
+            </div>
+            <div id="whitelistTable"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Import/Export Section -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-exchange-alt"></i> Import & Export</h2>
+        </div>
+        <div class="card-body">
+          <div class="import-export-grid">
+            <!-- Import Blacklist -->
+            <div class="upload-box">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <h3>Import Blacklist CSV</h3>
+              <p>Upload CSV file with numbers to blacklist</p>
+              <input type="file" id="blacklistFile" accept=".csv,.txt" onchange="importBlacklist(event)" style="display: none;">
+              <button class="btn btn-primary" onclick="document.getElementById('blacklistFile').click()">
+                <i class="fas fa-file-upload"></i> Choose File
+              </button>
+            </div>
+
+            <!-- Import Whitelist -->
+            <div class="upload-box">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <h3>Import Whitelist CSV</h3>
+              <p>Upload CSV file with numbers to whitelist</p>
+              <input type="file" id="whitelistFile" accept=".csv,.txt" onchange="importWhitelist(event)" style="display: none;">
+              <button class="btn btn-success" onclick="document.getElementById('whitelistFile').click()">
+                <i class="fas fa-file-upload"></i> Choose File
+              </button>
+            </div>
+
+            <!-- Export -->
+            <div class="upload-box">
+              <i class="fas fa-cloud-download-alt"></i>
+              <h3>Export Lists</h3>
+              <p>Download blacklist and whitelist as CSV</p>
+              <button class="btn btn-secondary" onclick="exportBlacklist()">
+                <i class="fas fa-download"></i> Export Blacklist
+              </button>
+              <button class="btn btn-secondary" onclick="exportWhitelist()" style="margin-top: 10px;">
+                <i class="fas fa-download"></i> Export Whitelist
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Section -->
+      <div class="card info-card">
+        <div class="card-header">
+          <h2><i class="fas fa-info-circle"></i> How It Works</h2>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <i class="fas fa-ban" style="color: #ef4444;"></i>
+              <h4>Blacklist</h4>
+              <p>Numbers in blacklist will <strong>never receive</strong> any blast messages. Use for opt-out requests or invalid numbers.</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-check-circle" style="color: #10b981;"></i>
+              <h4>Whitelist</h4>
+              <p>Numbers in whitelist are <strong>priority contacts</strong>. They bypass certain restrictions (coming soon).</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-shield-alt" style="color: #f59e0b;"></i>
+              <h4>Priority</h4>
+              <p>Blacklist takes priority. If a number is in both lists, it will be <strong>blocked</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Blacklist Modal -->
+  <div id="addBlacklistModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-ban"></i> Add to Blacklist</h2>
+        <span class="close" onclick="closeModal('addBlacklistModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" id="blacklistNumber" class="form-control" placeholder="628123456789" autofocus>
+        </div>
+        <div class="form-group">
+          <label>Reason (Optional)</label>
+          <input type="text" id="blacklistReason" class="form-control" placeholder="e.g., Opt-out request, Invalid number">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('addBlacklistModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="addToBlacklist()">
+          <i class="fas fa-ban"></i> Add to Blacklist
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Whitelist Modal -->
+  <div id="addWhitelistModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-check-circle"></i> Add to Whitelist</h2>
+        <span class="close" onclick="closeModal('addWhitelistModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" id="whitelistNumber" class="form-control" placeholder="628123456789" autofocus>
+        </div>
+        <div class="form-group">
+          <label>Note (Optional)</label>
+          <input type="text" id="whitelistNote" class="form-control" placeholder="e.g., VIP Customer, Partner">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('addWhitelistModal')">Cancel</button>
+        <button class="btn btn-success" onclick="addToWhitelist()">
+          <i class="fas fa-check-circle"></i> Add to Whitelist
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="blacklist.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

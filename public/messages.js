@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize recipient count button
   updateRecipientCountBtn();
   
+  // Update daily limit when session changes
+  document.getElementById('sessionSelect')?.addEventListener('change', showDailyLimitStatus);
+  
   // Close variable menu when clicking outside
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.variable-dropdown')) {
@@ -28,12 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedSession) {
     setTimeout(() => {
       document.getElementById('sessionSelect').value = savedSession;
+      showDailyLimitStatus();
       sessionStorage.removeItem('selectedSession');
     }, 500);
   } else {
     // Auto-select first active connection
     setTimeout(() => {
       autoSelectActiveConnection();
+      showDailyLimitStatus();
     }, 1000);
   }
 });
@@ -480,6 +485,43 @@ function fileToBase64(file) {
   });
 }
 
+// Daily limit settings
+const DAILY_LIMIT_PER_SESSION = 500; // Max messages per session per day
+const MIN_DELAY = 5000; // 5 seconds
+const MAX_DELAY = 15000; // 15 seconds
+
+// Check daily limit
+function checkDailyLimit(sessionId) {
+  const today = new Date().toDateString();
+  const key = `daily_${sessionId}_${today}`;
+  const count = storage.get(key) || 0;
+  return {
+    count,
+    remaining: DAILY_LIMIT_PER_SESSION - count,
+    percentage: (count / DAILY_LIMIT_PER_SESSION) * 100
+  };
+}
+
+// Increment daily counter
+function incrementDailyCounter(sessionId) {
+  const today = new Date().toDateString();
+  const key = `daily_${sessionId}_${today}`;
+  const count = storage.get(key) || 0;
+  storage.save(key, count + 1);
+}
+
+// Random delay between min and max
+function getRandomDelay(baseDelay) {
+  const randomMs = Math.floor(Math.random() * (MAX_DELAY - MIN_DELAY) + MIN_DELAY);
+  return randomMs;
+}
+
+// Check if number is blacklisted
+function isBlacklisted(number) {
+  const blacklist = storage.get('blacklist') || [];
+  return blacklist.includes(number);
+}
+
 // Send blast
 async function sendBlast() {
   const sessionId = document.getElementById('sessionSelect').value;
@@ -494,6 +536,33 @@ async function sendBlast() {
   if (recipients.length === 0) {
     showNotification('Tambahkan minimal 1 penerima', 'error');
     return;
+  }
+  
+  // Check daily limit
+  const dailyCheck = checkDailyLimit(sessionId);
+  if (dailyCheck.count >= DAILY_LIMIT_PER_SESSION) {
+    showNotification(`Daily limit reached (${DAILY_LIMIT_PER_SESSION} messages/day). Try again tomorrow.`, 'error');
+    return;
+  }
+  
+  // Filter blacklisted numbers
+  const originalCount = recipients.length;
+  const filteredRecipients = recipients.filter(num => !isBlacklisted(num));
+  const filteredData = recipients.map((num, i) => !isBlacklisted(num) ? recipientsData[i] : null).filter(d => d !== null);
+  
+  if (filteredRecipients.length < originalCount) {
+    const blocked = originalCount - filteredRecipients.length;
+    showNotification(`${blocked} nomor diblokir (blacklist). Melanjutkan dengan ${filteredRecipients.length} penerima.`, 'warning');
+  }
+  
+  // Check if remaining daily limit is enough
+  if (filteredRecipients.length > dailyCheck.remaining) {
+    showNotification(`Hanya bisa kirim ${dailyCheck.remaining} pesan lagi hari ini (dari ${filteredRecipients.length} penerima)`, 'warning');
+    if (!confirm(`Lanjutkan kirim ${dailyCheck.remaining} pesan pertama?`)) {
+      return;
+    }
+    filteredRecipients.splice(dailyCheck.remaining);
+    filteredData.splice(dailyCheck.remaining);
   }
   
   // Validate message content
@@ -521,6 +590,7 @@ async function sendBlast() {
   
   let sent = 0;
   let failed = 0;
+  const failedMessages = []; // Track failed for retry
   
   // Prepare media data if needed
   let mediaBase64 = null;
@@ -530,11 +600,11 @@ async function sendBlast() {
     mediaBase64 = await fileToBase64(uploadedDocumentFile);
   }
   
-  for (let i = 0; i < recipients.length; i++) {
-    const recipient = recipients[i];
+  for (let i = 0; i < filteredRecipients.length; i++) {
+    const recipient = filteredRecipients[i];
     
     // Get recipient data (if available)
-    const recipientData = recipientsData[i] || {
+    const recipientData = filteredData[i] || {
       nomor: recipient,
       nama: 'Pengguna',
       email: '',
@@ -556,24 +626,42 @@ async function sendBlast() {
       }
       
       sent++;
+      incrementDailyCounter(sessionId); // Increment counter on success
       const displayName = recipientData.nama !== 'Pengguna' ? recipientData.nama : recipient;
       addLog(`✓ Berhasil ke ${displayName} (${recipient})`, 'success');
     } catch (error) {
       failed++;
       const displayName = recipientData.nama !== 'Pengguna' ? recipientData.nama : recipient;
       addLog(`✗ Gagal ke ${displayName} (${recipient}): ${error.message}`, 'error');
+      
+      // Store failed message for retry
+      failedMessages.push({
+        recipient,
+        recipientData,
+        messageType: currentMessageType,
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
     
     // Update progress
-    const percent = Math.round(((i + 1) / recipients.length) * 100);
+    const percent = Math.round(((i + 1) / filteredRecipients.length) * 100);
     document.getElementById('progressFill').style.width = percent + '%';
     document.getElementById('progressPercent').textContent = percent + '%';
-    document.getElementById('progressCount').textContent = `${i + 1} / ${recipients.length}`;
+    document.getElementById('progressCount').textContent = `${i + 1} / ${filteredRecipients.length}`;
     
-    // Delay
-    if (i < recipients.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, delay));
+    // Random delay with base delay (Anti-ban)
+    if (i < filteredRecipients.length - 1) {
+      const randomDelay = getRandomDelay(delay);
+      addLog(`⏳ Delay ${(randomDelay/1000).toFixed(1)} detik...`, 'info');
+      await new Promise(resolve => setTimeout(resolve, randomDelay));
     }
+  }
+  
+  // Save failed messages for retry
+  if (failedMessages.length > 0) {
+    const existingFailed = storage.get('failedMessages') || [];
+    storage.save('failedMessages', [...existingFailed, ...failedMessages]);
   }
   
   // Update stats
@@ -582,16 +670,153 @@ async function sendBlast() {
   stats.totalFailed += failed;
   storage.save('stats', stats);
   
-  showNotification(`Selesai! Terkirim: ${sent}, Gagal: ${failed}`);
+  // Save to history
+  const history = storage.get('blastHistory') || [];
+  history.unshift({
+    id: Date.now(),
+    sessionId,
+    messageType: currentMessageType,
+    total: filteredRecipients.length,
+    sent,
+    failed,
+    timestamp: new Date().toISOString(),
+    dailyRemaining: checkDailyLimit(sessionId).remaining
+  });
+  storage.save('blastHistory', history.slice(0, 50)); // Keep last 50
+  
+  // Show completion
+  const message = failedMessages.length > 0 
+    ? `Selesai! Terkirim: ${sent}, Gagal: ${failed}. Klik tombol "Retry Failed" untuk coba lagi.`
+    : `Selesai! Terkirim: ${sent}, Gagal: ${failed}`;
+  
+  showNotification(message, failed > 0 ? 'warning' : 'success');
+  
+  // Show daily limit info
+  const finalDailyCheck = checkDailyLimit(sessionId);
+  addLog(`📊 Sisa kuota hari ini: ${finalDailyCheck.remaining}/${DAILY_LIMIT_PER_SESSION}`, 'info');
+  
+  if (finalDailyCheck.percentage >= 80) {
+    addLog(`⚠️ Peringatan: Kuota harian ${finalDailyCheck.percentage.toFixed(0)}%`, 'warning');
+  }
 }
 
-function addLog(message, type) {
+function addLog(message, type = 'info') {
   const log = document.getElementById('progressLogs');
   const item = document.createElement('div');
   item.className = `log-item log-${type}`;
   item.textContent = message;
   log.appendChild(item);
   log.scrollTop = log.scrollHeight;
+}
+
+// Show daily limit status
+function showDailyLimitStatus() {
+  const sessionId = document.getElementById('sessionSelect').value;
+  if (!sessionId) return;
+  
+  const dailyCheck = checkDailyLimit(sessionId);
+  const statusEl = document.getElementById('dailyLimitStatus');
+  
+  if (statusEl) {
+    let color = 'var(--success)';
+    let icon = 'fa-check-circle';
+    
+    if (dailyCheck.percentage >= 90) {
+      color = 'var(--danger)';
+      icon = 'fa-exclamation-triangle';
+    } else if (dailyCheck.percentage >= 80) {
+      color = 'var(--warning)';
+      icon = 'fa-exclamation-circle';
+    }
+    
+    statusEl.innerHTML = `
+      <i class="fas ${icon}" style="color: ${color}"></i>
+      <span style="color: ${color}">
+        ${dailyCheck.remaining}/${DAILY_LIMIT_PER_SESSION} messages remaining today
+      </span>
+    `;
+  }
+}
+
+// Retry failed messages
+async function retryFailedMessages() {
+  const failedMessages = storage.get('failedMessages') || [];
+  
+  if (failedMessages.length === 0) {
+    showNotification('Tidak ada pesan gagal untuk di-retry', 'info');
+    return;
+  }
+  
+  const sessionId = document.getElementById('sessionSelect').value;
+  if (!sessionId) {
+    showNotification('Pilih koneksi terlebih dahulu', 'error');
+    return;
+  }
+  
+  if (!confirm(`Retry ${failedMessages.length} pesan yang gagal?`)) {
+    return;
+  }
+  
+  // Show progress
+  document.getElementById('progressCard').style.display = 'block';
+  document.getElementById('progressLogs').innerHTML = '';
+  addLog(`🔄 Retrying ${failedMessages.length} failed messages...`, 'info');
+  
+  let sent = 0;
+  let stillFailed = [];
+  
+  for (let i = 0; i < failedMessages.length; i++) {
+    const { recipient, recipientData, messageType } = failedMessages[i];
+    
+    // Check daily limit
+    const dailyCheck = checkDailyLimit(sessionId);
+    if (dailyCheck.remaining <= 0) {
+      addLog(`⚠️ Daily limit reached. Stopping retry.`, 'warning');
+      stillFailed.push(...failedMessages.slice(i));
+      break;
+    }
+    
+    // Check blacklist
+    if (isBlacklisted(recipient)) {
+      addLog(`🚫 Skipped ${recipient} (blacklisted)`, 'warning');
+      continue;
+    }
+    
+    try {
+      if (messageType === 'text') {
+        const messageTemplate = document.getElementById('messageText').value;
+        const message = replaceVariables(messageTemplate, recipientData);
+        await api.sendTextMessage(sessionId, recipient, message);
+      }
+      // Add image/document retry if needed
+      
+      sent++;
+      incrementDailyCounter(sessionId);
+      const displayName = recipientData.nama;
+      addLog(`✓ Retry berhasil: ${displayName} (${recipient})`, 'success');
+    } catch (error) {
+      stillFailed.push(failedMessages[i]);
+      addLog(`✗ Masih gagal: ${recipient} - ${error.message}`, 'error');
+    }
+    
+    // Random delay
+    if (i < failedMessages.length - 1) {
+      const randomDelay = getRandomDelay(5000);
+      await new Promise(resolve => setTimeout(resolve, randomDelay));
+    }
+    
+    // Update progress
+    const percent = Math.round(((i + 1) / failedMessages.length) * 100);
+    document.getElementById('progressFill').style.width = percent + '%';
+    document.getElementById('progressPercent').textContent = percent + '%';
+    document.getElementById('progressCount').textContent = `${i + 1} / ${failedMessages.length}`;
+  }
+  
+  // Update failed messages
+  storage.save('failedMessages', stillFailed);
+  
+  showNotification(`Retry complete! Berhasil: ${sent}, Masih gagal: ${stillFailed.length}`, 'success');
+  addLog(`📊 Sisa kuota: ${checkDailyLimit(sessionId).remaining}/${DAILY_LIMIT_PER_SESSION}`, 'info');
 }
 
 // Styles

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WhatsApp Blast - Templates</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="sidebar-categories.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -17,30 +18,106 @@
       <i class="fas fa-bars"></i>
     </button>
     <nav>
-      <a href="index.html">
-        <i class="fas fa-home"></i>
-        <span>Dashboard</span>
-      </a>
-      <a href="connections.html">
-        <i class="fas fa-link"></i>
-        <span>Koneksi</span>
-      </a>
-      <a href="contacts.html">
-        <i class="fas fa-address-book"></i>
-        <span>Kontak</span>
-      </a>
-      <a href="messages.html">
-        <i class="fas fa-paper-plane"></i>
-        <span>Pesan</span>
-      </a>
-      <a href="templates.html" class="active">
-        <i class="fas fa-file-alt"></i>
-        <span>Template</span>
-      </a>
-      <a href="history.html">
-        <i class="fas fa-history"></i>
-        <span>Riwayat</span>
-      </a>
+      <!-- Main -->
+      <div class="nav-category" id="catMain">
+        <div class="category-header" onclick="toggleCategory('catMain')" data-tooltip="Main">
+          <div class="category-title">
+            <i class="fas fa-home"></i>
+            <span>Main</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="nav-category" id="catWhatsApp">
+        <div class="category-header" onclick="toggleCategory('catWhatsApp')" data-tooltip="WhatsApp">
+          <div class="category-title">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="connections.html">
+            <i class="fas fa-link"></i>
+            <span>Koneksi</span>
+          </a>
+          <a href="messages.html">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pesan</span>
+          </a>
+          <a href="scheduled.html">
+            <i class="fas fa-clock"></i>
+            <span>Scheduled</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Management -->
+      <div class="nav-category" id="catManagement">
+        <div class="category-header" onclick="toggleCategory('catManagement')" data-tooltip="Management">
+          <div class="category-title">
+            <i class="fas fa-tasks"></i>
+            <span>Management</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="contacts.html">
+            <i class="fas fa-address-book"></i>
+            <span>Kontak</span>
+          </a>
+          <a href="templates.html" class="active">
+            <i class="fas fa-file-alt"></i>
+            <span>Template</span>
+          </a>
+          <a href="blacklist.html">
+            <i class="fas fa-ban"></i>
+            <span>Blacklist</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-category" id="catReports">
+        <div class="category-header" onclick="toggleCategory('catReports')" data-tooltip="Reports">
+          <div class="category-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="history.html">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="nav-category" id="catSystem">
+        <div class="category-header" onclick="toggleCategory('catSystem')" data-tooltip="System">
+          <div class="category-title">
+            <i class="fas fa-cog"></i>
+            <span>System</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="settings.html">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
     </nav>
   </div>
 
@@ -67,6 +144,28 @@
           </button>
         </div>
         <div class="card-body">
+          <!-- Category Filter -->
+          <div class="template-filters" style="margin-bottom: 20px;">
+            <button class="filter-btn active" onclick="filterTemplatesByCategory('all')">
+              <i class="fas fa-th"></i> All
+            </button>
+            <button class="filter-btn" onclick="filterTemplatesByCategory('marketing')">
+              <i class="fas fa-bullhorn"></i> Marketing
+            </button>
+            <button class="filter-btn" onclick="filterTemplatesByCategory('sales')">
+              <i class="fas fa-chart-line"></i> Sales
+            </button>
+            <button class="filter-btn" onclick="filterTemplatesByCategory('support')">
+              <i class="fas fa-headset"></i> Support
+            </button>
+            <button class="filter-btn" onclick="filterTemplatesByCategory('reminder')">
+              <i class="fas fa-bell"></i> Reminder
+            </button>
+            <button class="filter-btn" onclick="filterTemplatesByCategory('other')">
+              <i class="fas fa-folder"></i> Other
+            </button>
+          </div>
+          
           <div id="templatesList" class="templates-grid">
             <p class="text-muted">No templates yet. Create your first template!</p>
           </div>
@@ -112,13 +211,28 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 20px;
+      padding-top: 45px;
       transition: all 0.3s;
       cursor: pointer;
+      position: relative;
     }
 
     .template-card:hover {
       border-color: var(--primary);
       box-shadow: 0 4px 12px rgba(37, 211, 102, 0.1);
+    }
+    
+    .template-category-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .template-card h3 {
@@ -141,6 +255,37 @@
       display: flex;
       gap: 10px;
     }
+    
+    .template-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .filter-btn {
+      padding: 8px 16px;
+      border: 2px solid var(--border);
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
   </style>
 
   <script src="config.js"></script>
@@ -156,31 +301,70 @@
       renderTemplates();
     }
 
+    let currentCategoryFilter = 'all';
+    
     function renderTemplates() {
       const container = document.getElementById('templatesList');
       
-      if (templates.length === 0) {
-        container.innerHTML = '<p class="text-muted">No templates yet. Create your first template!</p>';
+      // Filter by category
+      let filteredTemplates = templates;
+      if (currentCategoryFilter !== 'all') {
+        filteredTemplates = templates.filter(t => (t.category || 'other') === currentCategoryFilter);
+      }
+      
+      if (filteredTemplates.length === 0) {
+        const message = currentCategoryFilter === 'all' 
+          ? 'No templates yet. Create your first template!'
+          : `No templates in "${currentCategoryFilter}" category.`;
+        container.innerHTML = `<p class="text-muted">${message}</p>`;
         return;
       }
 
-      container.innerHTML = templates.map((template, idx) => `
-        <div class="template-card">
-          <h3>
-            ${template.name}
-            <i class="fas fa-trash" onclick="deleteTemplate(${idx})" style="cursor: pointer; color: #ef4444; font-size: 16px;"></i>
-          </h3>
-          <p>${template.message.substring(0, 100)}${template.message.length > 100 ? '...' : ''}</p>
-          <div class="template-actions">
-            <button class="btn btn-primary btn-sm" onclick="useTemplate(${idx})">
-              <i class="fas fa-paper-plane"></i> Use Template
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="copyTemplate(${idx})">
-              <i class="fas fa-copy"></i> Copy
-            </button>
+      container.innerHTML = filteredTemplates.map((template) => {
+        const idx = templates.indexOf(template);
+        const category = template.category || 'other';
+        const categoryColors = {
+          marketing: '#f59e0b',
+          sales: '#10b981',
+          support: '#3b82f6',
+          reminder: '#8b5cf6',
+          other: '#6b7280'
+        };
+        const categoryColor = categoryColors[category];
+        
+        return `
+          <div class="template-card">
+            <div class="template-category-badge" style="background: ${categoryColor};">
+              ${category}
+            </div>
+            <h3>
+              ${template.name}
+              <i class="fas fa-trash" onclick="deleteTemplate(${idx})" style="cursor: pointer; color: #ef4444; font-size: 16px;"></i>
+            </h3>
+            <p>${template.message.substring(0, 100)}${template.message.length > 100 ? '...' : ''}</p>
+            <div class="template-actions">
+              <button class="btn btn-primary btn-sm" onclick="useTemplate(${idx})">
+                <i class="fas fa-paper-plane"></i> Use Template
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="copyTemplate(${idx})">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+    
+    function filterTemplatesByCategory(category) {
+      currentCategoryFilter = category;
+      
+      // Update active button
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.closest('.filter-btn').classList.add('active');
+      
+      renderTemplates();
     }
 
     function showCreateTemplateModal() {
@@ -195,6 +379,7 @@
 
     function saveTemplate() {
       const name = document.getElementById('templateName').value.trim();
+      const category = document.getElementById('templateCategory').value;
       const message = document.getElementById('templateMessage').value.trim();
 
       if (!name || !message) {
@@ -205,6 +390,7 @@
       templates.push({
         id: Date.now(),
         name,
+        category: category || 'other',
         message,
         createdAt: new Date().toISOString()
       });

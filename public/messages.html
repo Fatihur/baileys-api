@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kirim Pesan Blast</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="sidebar-categories.css">
   <link rel="stylesheet" href="recipient-modal-styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -18,30 +19,106 @@
       <i class="fas fa-bars"></i>
     </button>
     <nav>
-      <a href="index.html">
-        <i class="fas fa-home"></i>
-        <span>Dashboard</span>
-      </a>
-      <a href="connections.html">
-        <i class="fas fa-link"></i>
-        <span>Koneksi</span>
-      </a>
-      <a href="contacts.html">
-        <i class="fas fa-address-book"></i>
-        <span>Kontak</span>
-      </a>
-      <a href="messages.html" class="active">
-        <i class="fas fa-paper-plane"></i>
-        <span>Pesan</span>
-      </a>
-      <a href="templates.html">
-        <i class="fas fa-file-alt"></i>
-        <span>Template</span>
-      </a>
-      <a href="history.html">
-        <i class="fas fa-history"></i>
-        <span>Riwayat</span>
-      </a>
+      <!-- Main -->
+      <div class="nav-category" id="catMain">
+        <div class="category-header" onclick="toggleCategory('catMain')" data-tooltip="Main">
+          <div class="category-title">
+            <i class="fas fa-home"></i>
+            <span>Main</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="nav-category" id="catWhatsApp">
+        <div class="category-header" onclick="toggleCategory('catWhatsApp')" data-tooltip="WhatsApp">
+          <div class="category-title">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="connections.html">
+            <i class="fas fa-link"></i>
+            <span>Koneksi</span>
+          </a>
+          <a href="messages.html" class="active">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pesan</span>
+          </a>
+          <a href="scheduled.html">
+            <i class="fas fa-clock"></i>
+            <span>Scheduled</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Management -->
+      <div class="nav-category" id="catManagement">
+        <div class="category-header" onclick="toggleCategory('catManagement')" data-tooltip="Management">
+          <div class="category-title">
+            <i class="fas fa-tasks"></i>
+            <span>Management</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="contacts.html">
+            <i class="fas fa-address-book"></i>
+            <span>Kontak</span>
+          </a>
+          <a href="templates.html">
+            <i class="fas fa-file-alt"></i>
+            <span>Template</span>
+          </a>
+          <a href="blacklist.html">
+            <i class="fas fa-ban"></i>
+            <span>Blacklist</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-category" id="catReports">
+        <div class="category-header" onclick="toggleCategory('catReports')" data-tooltip="Reports">
+          <div class="category-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="history.html">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="nav-category" id="catSystem">
+        <div class="category-header" onclick="toggleCategory('catSystem')" data-tooltip="System">
+          <div class="category-title">
+            <i class="fas fa-cog"></i>
+            <span>System</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="settings.html">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
     </nav>
   </div>
 
@@ -216,9 +293,24 @@
                 <small>Recommended: 2-5 detik untuk menghindari spam detection</small>
               </div>
 
-              <!-- Send Button -->
-              <button class="btn btn-primary btn-block btn-lg" onclick="sendBlast()">
-                <i class="fas fa-paper-plane"></i> Kirim Pesan Blast
+              <!-- Daily Limit Status -->
+              <div id="dailyLimitStatus" class="daily-limit-info" style="margin-bottom: 15px; padding: 10px; background: var(--light); border-radius: 8px; text-align: center; font-size: 13px;">
+                <i class="fas fa-info-circle"></i> Pilih koneksi untuk melihat kuota harian
+              </div>
+
+              <!-- Send Buttons -->
+              <div class="send-buttons-group">
+                <button class="btn btn-primary btn-block btn-lg" onclick="sendBlast()">
+                  <i class="fas fa-paper-plane"></i> Kirim Sekarang
+                </button>
+                
+                <button class="btn btn-secondary btn-block btn-lg" onclick="openScheduleModal()" style="margin-top: 10px;">
+                  <i class="fas fa-clock"></i> Schedule Blast
+                </button>
+              </div>
+              
+              <button class="btn btn-warning btn-block" onclick="retryFailedMessages()" style="margin-top: 10px;">
+                <i class="fas fa-redo"></i> Retry Failed Messages
               </button>
             </div>
           </div>
@@ -360,9 +452,245 @@
     </div>
   </div>
 
+  <!-- Schedule Modal -->
+  <div id="scheduleModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-clock"></i> Schedule Blast</h2>
+        <span class="close" onclick="closeScheduleModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label><i class="fas fa-calendar"></i> Select Date & Time</label>
+          <input type="datetime-local" id="scheduleDateTime" class="form-control" min="">
+          <small>Choose when this blast should be sent</small>
+        </div>
+        
+        <div class="schedule-summary">
+          <h4>Blast Summary:</h4>
+          <div class="summary-item">
+            <label>Session:</label>
+            <span id="scheduleSummarySession">-</span>
+          </div>
+          <div class="summary-item">
+            <label>Recipients:</label>
+            <span id="scheduleSummaryRecipients">0</span>
+          </div>
+          <div class="summary-item">
+            <label>Message Type:</label>
+            <span id="scheduleSummaryType">-</span>
+          </div>
+          <div class="summary-item">
+            <label>Schedule Time:</label>
+            <span id="scheduleSummaryTime">-</span>
+          </div>
+        </div>
+
+        <div class="alert alert-info" style="margin-top: 15px;">
+          <i class="fas fa-info-circle"></i>
+          <strong>Note:</strong> Scheduled messages will be sent automatically at the specified time. Make sure your browser is open and this tab is active.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeScheduleModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmSchedule()">
+          <i class="fas fa-check"></i> Schedule Blast
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="config.js"></script>
   <script src="messages.js"></script>
   <script src="recipient-modal.js"></script>
   <script src="sidebar.js"></script>
+  
+  <style>
+    .send-buttons-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .send-buttons-group .btn {
+      margin-top: 0 !important;
+    }
+    
+    .schedule-summary {
+      padding: 15px;
+      background: var(--light);
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    
+    .schedule-summary h4 {
+      margin: 0 0 15px 0;
+      color: var(--text-primary);
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+    
+    .summary-item label {
+      font-weight: 600;
+      color: #666;
+    }
+    
+    .summary-item span {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .alert-info {
+      background: #dbeafe;
+      border: 1px solid #3b82f6;
+      color: #1e40af;
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    
+    @media (max-width: 768px) {
+      .send-buttons-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  
+  <script>
+    // Schedule Modal Functions
+    function openScheduleModal() {
+      // Validate
+      const sessionId = document.getElementById('sessionSelect').value;
+      const recipients = selectedRecipients;
+      const messageText = document.getElementById('messageText').value.trim();
+      
+      if (!sessionId) {
+        showNotification('Pilih koneksi terlebih dahulu!', 'error');
+        return;
+      }
+      
+      if (recipients.length === 0) {
+        showNotification('Pilih minimal 1 penerima!', 'error');
+        return;
+      }
+      
+      if (currentMessageType === 'text' && !messageText) {
+        showNotification('Tulis pesan terlebih dahulu!', 'error');
+        return;
+      }
+      
+      // Set minimum datetime to now
+      const now = new Date();
+      now.setMinutes(now.getMinutes() + 5); // Minimum 5 minutes from now
+      const minDateTime = now.toISOString().slice(0, 16);
+      document.getElementById('scheduleDateTime').min = minDateTime;
+      document.getElementById('scheduleDateTime').value = minDateTime;
+      
+      // Update summary
+      updateScheduleSummary();
+      
+      // Show modal
+      document.getElementById('scheduleModal').classList.add('show');
+    }
+    
+    function closeScheduleModal() {
+      document.getElementById('scheduleModal').classList.remove('show');
+    }
+    
+    function updateScheduleSummary() {
+      const sessionId = document.getElementById('sessionSelect').value;
+      const sessionText = document.getElementById('sessionSelect').selectedOptions[0]?.text || '-';
+      const recipients = selectedRecipients.length;
+      const messageType = currentMessageType;
+      const dateTime = document.getElementById('scheduleDateTime').value;
+      
+      document.getElementById('scheduleSummarySession').textContent = sessionText;
+      document.getElementById('scheduleSummaryRecipients').textContent = recipients;
+      document.getElementById('scheduleSummaryType').textContent = messageType;
+      
+      if (dateTime) {
+        const date = new Date(dateTime);
+        document.getElementById('scheduleSummaryTime').textContent = date.toLocaleString();
+      } else {
+        document.getElementById('scheduleSummaryTime').textContent = '-';
+      }
+    }
+    
+    // Update summary when datetime changes
+    document.addEventListener('DOMContentLoaded', () => {
+      const dateTimeInput = document.getElementById('scheduleDateTime');
+      if (dateTimeInput) {
+        dateTimeInput.addEventListener('change', updateScheduleSummary);
+      }
+    });
+    
+    function confirmSchedule() {
+      const scheduleDateTime = document.getElementById('scheduleDateTime').value;
+      
+      if (!scheduleDateTime) {
+        showNotification('Pilih tanggal & waktu!', 'error');
+        return;
+      }
+      
+      const scheduleDate = new Date(scheduleDateTime);
+      const now = new Date();
+      
+      if (scheduleDate <= now) {
+        showNotification('Waktu schedule harus di masa depan!', 'error');
+        return;
+      }
+      
+      // Prepare schedule data
+      const sessionId = document.getElementById('sessionSelect').value;
+      const messageText = document.getElementById('messageText').value.trim();
+      const imageCaption = document.getElementById('imageCaption')?.value.trim() || '';
+      
+      const schedule = {
+        id: 'schedule_' + Date.now(),
+        sessionId: sessionId,
+        message: currentMessageType === 'text' ? messageText : imageCaption,
+        messageType: currentMessageType,
+        messagePreview: (currentMessageType === 'text' ? messageText : imageCaption).substring(0, 100),
+        recipients: selectedRecipients.map(r => r.number),
+        recipientCount: selectedRecipients.length,
+        scheduledTime: scheduleDate.toISOString(),
+        createdAt: new Date().toISOString(),
+        status: 'pending',
+        mediaUrl: currentImageBase64 || currentDocumentBase64 || null
+      };
+      
+      // Save to storage
+      const schedules = storage.get('scheduledMessages') || [];
+      schedules.push(schedule);
+      storage.save('scheduledMessages', schedules);
+      
+      // Close modal
+      closeScheduleModal();
+      
+      // Show success
+      showNotification(`✅ Blast scheduled for ${scheduleDate.toLocaleString()}!`, 'success');
+      
+      // Redirect to scheduled page
+      setTimeout(() => {
+        if (confirm('Lihat scheduled blasts sekarang?')) {
+          window.location.href = 'scheduled.html';
+        }
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
