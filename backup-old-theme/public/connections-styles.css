@@ -1,0 +1,172 @@
+/* Connections Page Specific Styles */
+
+.session-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.session-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-color: var(--primary);
+}
+
+.session-card.inactive-session {
+  opacity: 0.65;
+  background: #fafafa;
+  border-color: #e0e0e0;
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.session-info-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.session-status {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.session-status.status-connected {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.session-status.status-connecting {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+  animation: pulse 2s infinite;
+}
+
+.session-status.status-disconnected {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.session-details {
+  flex: 1;
+}
+
+.session-details h3 {
+  margin: 0 0 5px 0;
+  font-size: 17px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.session-phone {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.session-phone i {
+  font-size: 12px;
+  color: #667eea;
+}
+
+.session-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Session Toggle */
+.session-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.toggle-label {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Session Actions */
+.session-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-active {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.badge-inactive {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .session-card {
+    padding: 15px;
+  }
+  
+  .session-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .session-toggle {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .toggle-switch {
+    margin: 0 auto;
+  }
+  
+  .session-actions {
+    flex-direction: column;
+  }
+  
+  .session-actions button {
+    width: 100%;
+  }
+}

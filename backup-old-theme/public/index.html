@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Blast - Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="dashboard-styles.css">
+  <link rel="stylesheet" href="activity-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <!-- Main -->
+      <div class="nav-category" id="catMain">
+        <div class="category-header" onclick="toggleCategory('catMain')" data-tooltip="Main">
+          <div class="category-title">
+            <i class="fas fa-home"></i>
+            <span>Main</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="index.html" class="active">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="nav-category" id="catWhatsApp">
+        <div class="category-header" onclick="toggleCategory('catWhatsApp')" data-tooltip="WhatsApp">
+          <div class="category-title">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="connections.html">
+            <i class="fas fa-link"></i>
+            <span>Koneksi</span>
+          </a>
+          <a href="messages.html">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pesan</span>
+          </a>
+          <a href="scheduled.html">
+            <i class="fas fa-clock"></i>
+            <span>Scheduled</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Management -->
+      <div class="nav-category" id="catManagement">
+        <div class="category-header" onclick="toggleCategory('catManagement')" data-tooltip="Management">
+          <div class="category-title">
+            <i class="fas fa-tasks"></i>
+            <span>Management</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="contacts.html">
+            <i class="fas fa-address-book"></i>
+            <span>Kontak</span>
+          </a>
+          <a href="templates.html">
+            <i class="fas fa-file-alt"></i>
+            <span>Template</span>
+          </a>
+          <a href="blacklist.html">
+            <i class="fas fa-ban"></i>
+            <span>Blacklist</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-category" id="catReports">
+        <div class="category-header" onclick="toggleCategory('catReports')" data-tooltip="Reports">
+          <div class="category-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="history.html">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="nav-category" id="catSystem">
+        <div class="category-header" onclick="toggleCategory('catSystem')" data-tooltip="System">
+          <div class="category-title">
+            <i class="fas fa-cog"></i>
+            <span>System</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="settings.html">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Dashboard</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #25D366;">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalSent">0</h3>
+            <p>Messages Sent Today</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #667eea;">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalContacts">0</h3>
+            <p>Total Contacts</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #f59e0b;">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalPending">0</h3>
+            <p>Pending Messages</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #ef4444;">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalFailed">0</h3>
+            <p>Failed Messages</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Connections -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-link"></i> Koneksi Aktif</h2>
+          <a href="connections.html" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Tambah Koneksi
+          </a>
+        </div>
+        <div class="card-body">
+          <div id="activeConnections" class="connections-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Groups -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-users"></i> Grup Kontak</h2>
+          <a href="contacts.html" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Tambah Grup
+          </a>
+        </div>
+        <div class="card-body">
+          <div id="contactGroups" class="groups-grid">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <a href="connections.html" class="action-card">
+          <div class="action-icon" style="background: #667eea;">
+            <i class="fas fa-link"></i>
+          </div>
+          <h3>Kelola Koneksi</h3>
+          <p>Hubungkan WhatsApp Anda</p>
+        </a>
+
+        <a href="contacts.html" class="action-card">
+          <div class="action-icon" style="background: #f59e0b;">
+            <i class="fas fa-address-book"></i>
+          </div>
+          <h3>Kelola Kontak</h3>
+          <p>Import & manage kontak</p>
+        </a>
+
+        <a href="messages.html" class="action-card">
+          <div class="action-icon" style="background: #25D366;">
+            <i class="fas fa-paper-plane"></i>
+          </div>
+          <h3>Kirim Pesan</h3>
+          <p>Blast message sekarang</p>
+        </a>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-chart-line"></i> Aktivitas Terbaru</h2>
+          <a href="history.html" class="btn btn-secondary btn-sm">Lihat Semua</a>
+        </div>
+        <div class="card-body">
+          <div id="recentActivity" class="activity-list">
+            <p class="text-muted">Belum ada aktivitas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

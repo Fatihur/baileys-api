@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Blast - History</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="sidebar-categories.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <!-- Main -->
+      <div class="nav-category" id="catMain">
+        <div class="category-header" onclick="toggleCategory('catMain')" data-tooltip="Main">
+          <div class="category-title">
+            <i class="fas fa-home"></i>
+            <span>Main</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="nav-category" id="catWhatsApp">
+        <div class="category-header" onclick="toggleCategory('catWhatsApp')" data-tooltip="WhatsApp">
+          <div class="category-title">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="connections.html">
+            <i class="fas fa-link"></i>
+            <span>Koneksi</span>
+          </a>
+          <a href="messages.html">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pesan</span>
+          </a>
+          <a href="scheduled.html">
+            <i class="fas fa-clock"></i>
+            <span>Scheduled</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Management -->
+      <div class="nav-category" id="catManagement">
+        <div class="category-header" onclick="toggleCategory('catManagement')" data-tooltip="Management">
+          <div class="category-title">
+            <i class="fas fa-tasks"></i>
+            <span>Management</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="contacts.html">
+            <i class="fas fa-address-book"></i>
+            <span>Kontak</span>
+          </a>
+          <a href="templates.html">
+            <i class="fas fa-file-alt"></i>
+            <span>Template</span>
+          </a>
+          <a href="blacklist.html">
+            <i class="fas fa-ban"></i>
+            <span>Blacklist</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-category" id="catReports">
+        <div class="category-header" onclick="toggleCategory('catReports')" data-tooltip="Reports">
+          <div class="category-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="history.html" class="active">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="nav-category" id="catSystem">
+        <div class="category-header" onclick="toggleCategory('catSystem')" data-tooltip="System">
+          <div class="category-title">
+            <i class="fas fa-cog"></i>
+            <span>System</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="settings.html">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Riwayat Blast</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Stats Summary -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <i class="fas fa-paper-plane"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalBlasts">0</h3>
+            <p>Total Blasts</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalSent">0</h3>
+            <p>Messages Sent</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalFailed">0</h3>
+            <p>Failed</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <i class="fas fa-percentage"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="successRate">0%</h3>
+            <p>Success Rate</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="card">
+        <div class="card-body">
+          <div class="history-filters">
+            <div class="filter-group">
+              <label>Filter by Date:</label>
+              <select id="dateFilter" class="form-control" onchange="filterHistory()">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Filter by Status:</label>
+              <select id="statusFilter" class="form-control" onchange="filterHistory()">
+                <option value="all">All</option>
+                <option value="success">Success (100%)</option>
+                <option value="partial">Partial Success</option>
+                <option value="failed">Has Failures</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary" onclick="exportHistory()">
+              <i class="fas fa-download"></i> Export CSV
+            </button>
+            <button class="btn btn-danger" onclick="clearHistory()">
+              <i class="fas fa-trash"></i> Clear History
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Table -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-list"></i> Blast History</h2>
+          <span class="badge badge-primary" id="historyCount">0</span>
+        </div>
+        <div class="card-body">
+          <div id="historyList">
+            <p class="text-muted">No history yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      text-align: left;
+      padding: 12px;
+      background: var(--light);
+      font-weight: 600;
+      font-size: 14px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .history-table td {
+      padding: 15px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-table tr:hover {
+      background: var(--light);
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+  </style>
+
+  <script src="config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadHistory();
+    });
+
+    function loadHistory() {
+      const history = storage.get('blastHistory') || [];
+      renderHistory(history);
+    }
+
+    function renderHistory(history) {
+      const container = document.getElementById('historyList');
+      
+      if (history.length === 0) {
+        container.innerHTML = '<p class="text-muted">No history yet</p>';
+        return;
+      }
+
+      container.innerHTML = `
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Session</th>
+              <th>Type</th>
+              <th>Total</th>
+              <th>Sent</th>
+              <th>Failed</th>
+              <th>Success Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${history.map(item => {
+              const date = new Date(item.date);
+              const successRate = ((item.sent / item.total) * 100).toFixed(1);
+              const badgeClass = successRate >= 90 ? 'badge-success' : successRate >= 70 ? 'badge-warning' : 'badge-danger';
+              
+              return `
+                <tr>
+                  <td>${date.toLocaleString()}</td>
+                  <td><strong>${item.sessionId}</strong></td>
+                  <td><span class="badge badge-success">${item.messageType}</span></td>
+                  <td>${item.total}</td>
+                  <td style="color: var(--success);">${item.sent}</td>
+                  <td style="color: var(--danger);">${item.failed}</td>
+                  <td><span class="badge ${badgeClass}">${successRate}%</span></td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function clearHistory() {
+      if (!confirm('Are you sure you want to clear all history?')) return;
+      
+      storage.remove('blastHistory');
+      showNotification('History cleared');
+      loadHistory();
+    }
+  </script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

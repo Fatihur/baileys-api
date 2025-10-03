@@ -1,149 +1,246 @@
-# 📝 Panduan Penggunaan Variabel
+# 🔧 Variable Scope Fix - Schedule Blast
 
-## 🎯 Fitur Variabel
+## 🔴 Problem
 
-Gunakan variabel untuk personalisasi pesan otomatis ke setiap penerima.
+**"Pilih minimal 1 penerima!"** error muncul padahal penerima sudah dipilih.
+
+## 🐛 Root Cause
+
+Variabel `recipients` di `messages.js` adalah **local variable** (`let`), tidak bisa diakses dari `schedule-functions.js`.
+
+```javascript
+// messages.js (OLD - BROKEN)
+let recipients = [];  // ❌ Not accessible from other scripts
+
+// schedule-functions.js
+const currentRecipients = window.recipients || [];  // ❌ undefined
+```
+
+## ✅ Solution
+
+### **1. Expose as Global Variables**
+
+Changed all main variables to `window.*` di `messages.js`:
+
+```javascript
+// messages.js (NEW - FIXED)
+window.recipients = [];        // ✅ Global
+window.recipientsData = [];    // ✅ Global
+window.currentMessageType = 'text';  // ✅ Global
+window.uploadedImageFile = null;     // ✅ Global
+window.uploadedDocumentFile = null;  // ✅ Global
+
+// Local references for convenience
+let recipients = window.recipients;
+let recipientsData = window.recipientsData;
+// ... etc
+```
+
+### **2. Update on Confirm**
+
+Modified `recipient-modal.js` to update global:
+
+```javascript
+// recipient-modal.js
+function confirmRecipients() {
+  recipients = [...tempSelectedRecipients];
+  recipientsData = [...tempSelectedData];
+  
+  // ✅ Update window global variables
+  window.recipients = recipients;
+  window.recipientsData = recipientsData;
+  
+  // ... rest of code
+}
+```
+
+### **3. Check from Button Count (Fallback)**
+
+Modified `schedule-functions.js` untuk fallback:
+
+```javascript
+// schedule-functions.js
+function openScheduleModal() {
+  // ✅ Primary: Check window.recipients
+  // ✅ Fallback: Check button text content
+  const recipientCount = document.getElementById('recipientCountBtn')?.textContent || '0';
+  const currentRecipients = parseInt(recipientCount);
+  
+  if (currentRecipients === 0) {
+    showNotification('Pilih minimal 1 penerima!', 'error');
+    return;
+  }
+  // ...
+}
+```
+
+## 🎯 How It Works Now
+
+### **Flow:**
+
+1. **User clicks "Pilih Penerima"**
+   ```
+   recipient-modal.js opens
+   ```
+
+2. **User selects contacts**
+   ```
+   tempSelectedRecipients = ['628xxx', '628yyy']
+   ```
+
+3. **User clicks "Konfirmasi"**
+   ```javascript
+   confirmRecipients() {
+     recipients = [...tempSelectedRecipients];
+     window.recipients = recipients;  // ✅ Update global
+     // Button shows: "2"
+   }
+   ```
+
+4. **User clicks "Schedule Blast"**
+   ```javascript
+   openScheduleModal() {
+     // Check window.recipients OR button count
+     const count = window.recipients?.length || parseInt(buttonText);
+     if (count > 0) {
+       // ✅ Modal opens!
+     }
+   }
+   ```
+
+## 🧪 Testing
+
+### **Test 1: Check Global Access**
+
+```javascript
+// Open console (F12)
+console.log(window.recipients);
+// Should show: ['628xxx', '628yyy', ...]
+
+console.log(window.recipientsData);
+// Should show: [{number: '628xxx', variables: {...}}, ...]
+```
+
+### **Test 2: Validation Works**
+
+```bash
+# 1. DON'T select recipients
+# 2. Click "Schedule Blast"
+# ✅ Should show: "Pilih minimal 1 penerima!"
+
+# 3. Click "Pilih Penerima", add 1 contact
+# 4. Click "Schedule Blast"
+# ✅ Should show modal!
+```
+
+### **Test 3: Button Count Sync**
+
+```javascript
+// After selecting recipients
+const btn = document.getElementById('recipientCountBtn');
+console.log(btn.textContent);
+// Should match: window.recipients.length
+```
+
+## 📝 Files Changed
+
+### **1. messages.js**
+- ✅ Changed to `window.recipients`
+- ✅ Changed to `window.recipientsData`
+- ✅ Changed to `window.currentMessageType`
+- ✅ Added local references for convenience
+
+### **2. recipient-modal.js**
+- ✅ Update `window.recipients` on confirm
+- ✅ Update `window.recipientsData` on confirm
+
+### **3. schedule-functions.js**
+- ✅ Read from button count (fallback)
+- ✅ Access `window.recipients`
+- ✅ Safe null checks
+
+## 🚀 How to Test
+
+### **Step 1: Refresh Page**
+
+```bash
+# Hard refresh
+Ctrl+F5
+```
+
+### **Step 2: Open Console**
+
+```javascript
+// Check if globals exist
+console.log(typeof window.recipients);
+// Should be: "object"
+```
+
+### **Step 3: Select Recipients**
+
+1. Click "Pilih Penerima"
+2. Add 1+ contacts
+3. Click "Konfirmasi"
+4. Check console:
+   ```javascript
+   console.log(window.recipients.length);
+   // Should be: > 0
+   ```
+
+### **Step 4: Schedule Blast**
+
+1. Fill form (session, message)
+2. Click "Schedule Blast"
+3. ✅ Modal should open!
+
+## 🐛 Debug
+
+### **If Still Shows "Pilih minimal 1 penerima":**
+
+```javascript
+// F12 Console
+console.log('Recipients:', window.recipients);
+console.log('Button text:', document.getElementById('recipientCountBtn')?.textContent);
+
+// Both should show > 0
+```
+
+### **If window.recipients is undefined:**
+
+```javascript
+// Check if messages.js loaded
+console.log(typeof confirmRecipients);
+// Should be: "function"
+
+// Check if script tag exists
+document.querySelectorAll('script[src="messages.js"]');
+// Should find 1 element
+```
+
+### **If button count is "0":**
+
+```javascript
+// After selecting recipients, check:
+console.log('Temp:', tempSelectedRecipients);
+console.log('Recipients:', recipients);
+console.log('Window:', window.recipients);
+
+// All should match
+```
+
+## ✅ Summary
+
+**Problem:** Scope issue - `recipients` not accessible
+
+**Fix:** 
+1. ✅ Expose as `window.recipients`
+2. ✅ Update global on confirm
+3. ✅ Fallback to button count
+
+**Test:** Refresh → Select recipients → Click Schedule Blast → Modal opens!
 
 ---
 
-## ✨ Variabel Yang Tersedia
+**Status: FIXED** ✅
 
-| Variabel | Deskripsi | Contoh |
-|----------|-----------|--------|
-| `{nama}` | Nama penerima | Budi |
-| `{nomor}` | Nomor telepon | 628123456789 |
-| `{email}` | Email penerima | budi@email.com |
-| `{custom1}` | Field custom 1 | Jakarta |
-| `{custom2}` | Field custom 2 | Premium |
-
----
-
-## 🖊️ Cara Menggunakan Text Editor
-
-### 1. **Formatting Text**
-- **Bold**: Pilih teks → Klik tombol **B** atau gunakan `*teks*`
-- **Italic**: Pilih teks → Klik tombol _I_ atau gunakan `_teks_`
-- **Strikethrough**: Pilih teks → Klik tombol ~~S~~ atau gunakan `~teks~`
-- **Monospace**: Pilih teks → Klik tombol `</>` atau gunakan ` ```teks``` `
-
-### 2. **Insert Variabel**
-- Klik tombol **"Variabel"** di toolbar
-- Pilih variabel yang ingin digunakan
-- Variabel akan otomatis ditambahkan di posisi kursor
-
----
-
-## 📋 Format Input Penerima
-
-### **Manual Input**
-```
-6281234567890,Budi,budi@email.com,Jakarta,Premium
-6281234567891,Ani,ani@email.com,Bandung,Basic
-6281234567892
-```
-
-**Format**: `nomor,nama,email,custom1,custom2`
-- Jika hanya nomor: variabel `{nama}` akan diisi "Pengguna"
-
-### **Upload CSV**
-Buat file CSV dengan format yang sama:
-```csv
-6281234567890,Budi,budi@email.com,Jakarta,Premium
-6281234567891,Ani,ani@email.com,Bandung,Basic
-6281234567892,Citra,citra@email.com,Surabaya,Gold
-```
-
----
-
-## 💬 Contoh Penggunaan
-
-### **Text Message**
-```
-Halo {nama}! 👋
-
-Terima kasih sudah bergabung dengan kami.
-Nomor Anda: {nomor}
-Email: {email}
-Lokasi: {custom1}
-Paket: {custom2}
-
-Salam hangat,
-Tim Marketing
-```
-
-### **Hasil untuk Budi**
-```
-Halo Budi! 👋
-
-Terima kasih sudah bergabung dengan kami.
-Nomor Anda: 628123456789
-Email: budi@email.com
-Lokasi: Jakarta
-Paket: Premium
-
-Salam hangat,
-Tim Marketing
-```
-
-### **Image Caption**
-```
-Hi {nama}! Ini katalog produk kami. 
-Khusus untuk member {custom2} 🎉
-```
-
----
-
-## ⚡ Tips & Trik
-
-1. **Preview Real-time**: Lihat preview dengan data contoh sebelum kirim
-2. **Mix Format**: Gabungkan plain nomor dan CSV format
-3. **Caption Variables**: Variabel juga bisa digunakan di caption gambar
-4. **Empty Fields**: Jika field kosong, variabel akan diganti dengan string kosong
-5. **Default Nama**: Jika nama tidak diisi, akan otomatis jadi "Pengguna"
-
----
-
-## 🚀 Best Practices
-
-✅ **DO:**
-- Gunakan variabel untuk personalisasi
-- Test dengan 1-2 nomor dulu
-- Siapkan data CSV yang lengkap
-- Cek preview sebelum kirim
-
-❌ **DON'T:**
-- Jangan gunakan variabel yang tidak ada datanya
-- Jangan kirim mass message tanpa test
-- Jangan lupa isi nama di data kontak
-
----
-
-## 🎨 WhatsApp Formatting
-
-Formatting yang didukung WhatsApp:
-- `*bold*` → **bold**
-- `_italic_` → _italic_
-- `~strikethrough~` → ~~strikethrough~~
-- ` ```monospace``` ` → `monospace`
-
-Gunakan toolbar untuk formatting otomatis!
-
----
-
-## 📞 Troubleshooting
-
-**Q: Variabel tidak ter-replace?**
-- Pastikan format data benar (ada koma sebagai separator)
-- Cek preview, harus muncul data contoh
-
-**Q: Nama muncul "Pengguna" semua?**
-- Data nama belum diisi di CSV
-- Format: `nomor,nama,email,custom1,custom2`
-
-**Q: Variabel {email} kosong?**
-- Email tidak diisi di data CSV kolom ke-3
-- Biarkan kosong atau isi "-"
-
----
-
-Selamat mencoba! 🎉
+**Next:** Refresh page (Ctrl+F5) and test!

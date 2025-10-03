@@ -328,8 +328,13 @@ function clearAllRecipients() {
 
 // Confirm recipients (apply to main form)
 function confirmRecipients() {
+  // Update both local and global references
   recipients = [...tempSelectedRecipients];
   recipientsData = [...tempSelectedData];
+  
+  // Update window global variables
+  window.recipients = recipients;
+  window.recipientsData = recipientsData;
   
   updateRecipientsList();
   

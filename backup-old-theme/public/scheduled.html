@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scheduled Messages - WhatsApp Blast</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="sidebar-categories.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <!-- Main -->
+      <div class="nav-category" id="catMain">
+        <div class="category-header" onclick="toggleCategory('catMain')" data-tooltip="Main">
+          <div class="category-title">
+            <i class="fas fa-home"></i>
+            <span>Main</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="nav-category" id="catWhatsApp">
+        <div class="category-header" onclick="toggleCategory('catWhatsApp')" data-tooltip="WhatsApp">
+          <div class="category-title">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="connections.html">
+            <i class="fas fa-link"></i>
+            <span>Koneksi</span>
+          </a>
+          <a href="messages.html">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pesan</span>
+          </a>
+          <a href="scheduled.html" class="active">
+            <i class="fas fa-clock"></i>
+            <span>Scheduled</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Management -->
+      <div class="nav-category" id="catManagement">
+        <div class="category-header" onclick="toggleCategory('catManagement')" data-tooltip="Management">
+          <div class="category-title">
+            <i class="fas fa-tasks"></i>
+            <span>Management</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="contacts.html">
+            <i class="fas fa-address-book"></i>
+            <span>Kontak</span>
+          </a>
+          <a href="templates.html">
+            <i class="fas fa-file-alt"></i>
+            <span>Template</span>
+          </a>
+          <a href="blacklist.html">
+            <i class="fas fa-ban"></i>
+            <span>Blacklist</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-category" id="catReports">
+        <div class="category-header" onclick="toggleCategory('catReports')" data-tooltip="Reports">
+          <div class="category-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="history.html">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="nav-category" id="catSystem">
+        <div class="category-header" onclick="toggleCategory('catSystem')" data-tooltip="System">
+          <div class="category-title">
+            <i class="fas fa-cog"></i>
+            <span>System</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="settings.html">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Scheduled Messages</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalScheduled">0</h3>
+            <p>Total Scheduled</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <i class="fas fa-hourglass-half"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="pendingScheduled">0</h3>
+            <p>Pending</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="sentScheduled">0</h3>
+            <p>Sent</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+            <i class="fas fa-calendar-day"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="todayScheduled">0</h3>
+            <p>Today</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-lightning-bolt"></i> Quick Actions</h2>
+        </div>
+        <div class="card-body">
+          <div class="quick-actions">
+            <button class="btn btn-primary" onclick="window.location.href='messages.html'">
+              <i class="fas fa-plus"></i> Create New Schedule
+            </button>
+            <button class="btn btn-secondary" onclick="refreshScheduler()">
+              <i class="fas fa-sync"></i> Refresh Scheduler
+            </button>
+            <button class="btn btn-danger" onclick="clearCompleted()">
+              <i class="fas fa-trash"></i> Clear Completed
+            </button>
+          </div>
+          <div class="scheduler-status">
+            <i class="fas fa-circle" id="schedulerStatusIcon"></i>
+            <span id="schedulerStatusText">Scheduler Active</span>
+            <small id="lastCheck">Last check: Never</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Schedules -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-calendar-alt"></i> Upcoming Schedules</h2>
+          <div class="filter-tabs">
+            <button class="tab-btn active" onclick="filterSchedules('all')">All</button>
+            <button class="tab-btn" onclick="filterSchedules('pending')">Pending</button>
+            <button class="tab-btn" onclick="filterSchedules('sent')">Sent</button>
+            <button class="tab-btn" onclick="filterSchedules('failed')">Failed</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="schedulesList">
+            <p class="text-muted">No scheduled messages. Create one from Messages page!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detailModal" class="modal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2><i class="fas fa-info-circle"></i> Schedule Details</h2>
+        <span class="close" onclick="closeModal('detailModal')">&times;</span>
+      </div>
+      <div class="modal-body" id="detailContent"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('detailModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="scheduler.js"></script>
+  <script>
+    let schedules = [];
+    let filteredSchedules = [];
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSchedules();
+      updateStats();
+      startScheduler();
+      
+      // Update every 30 seconds
+      setInterval(() => {
+        loadSchedules();
+        updateStats();
+      }, 30000);
+    });
+
+    function loadSchedules() {
+      schedules = storage.get('scheduledMessages') || [];
+      filterSchedules(currentFilter);
+    }
+
+    function filterSchedules(status) {
+      currentFilter = status;
+      
+      // Update active tab
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event?.target?.classList.add('active');
+      
+      if (status === 'all') {
+        filteredSchedules = schedules;
+      } else {
+        filteredSchedules = schedules.filter(s => s.status === status);
+      }
+      
+      renderSchedules();
+    }
+
+    function updateStats() {
+      const pending = schedules.filter(s => s.status === 'pending').length;
+      const sent = schedules.filter(s => s.status === 'sent').length;
+      
+      const today = new Date().toDateString();
+      const todaySchedules = schedules.filter(s => {
+        const scheduleDate = new Date(s.scheduledTime).toDateString();
+        return scheduleDate === today && s.status === 'pending';
+      }).length;
+      
+      document.getElementById('totalScheduled').textContent = schedules.length;
+      document.getElementById('pendingScheduled').textContent = pending;
+      document.getElementById('sentScheduled').textContent = sent;
+      document.getElementById('todayScheduled').textContent = todaySchedules;
+    }
+
+    function renderSchedules() {
+      const container = document.getElementById('schedulesList');
+      
+      if (filteredSchedules.length === 0) {
+        const msg = currentFilter === 'all' 
+          ? 'No scheduled messages. Create one from Messages page!'
+          : `No ${currentFilter} schedules.`;
+        container.innerHTML = `<p class="text-muted">${msg}</p>`;
+        return;
+      }
+
+      // Sort by scheduled time
+      const sorted = [...filteredSchedules].sort((a, b) => 
+        new Date(a.scheduledTime) - new Date(b.scheduledTime)
+      );
+
+      container.innerHTML = sorted.map(schedule => {
+        const scheduleDate = new Date(schedule.scheduledTime);
+        const now = new Date();
+        const isPast = scheduleDate < now;
+        const isToday = scheduleDate.toDateString() === now.toDateString();
+        
+        const statusColors = {
+          pending: 'badge-warning',
+          sent: 'badge-success',
+          failed: 'badge-danger',
+          cancelled: 'badge-secondary'
+        };
+        
+        const timeUntil = getTimeUntil(scheduleDate);
+        
+        return `
+          <div class="schedule-card ${schedule.status}">
+            <div class="schedule-header">
+              <div>
+                <h3>${schedule.messagePreview || 'No message'}</h3>
+                <div class="schedule-meta">
+                  <span class="badge ${statusColors[schedule.status]}">${schedule.status}</span>
+                  ${isToday ? '<span class="badge badge-primary">Today</span>' : ''}
+                  ${isPast && schedule.status === 'pending' ? '<span class="badge badge-danger">Overdue</span>' : ''}
+                </div>
+              </div>
+              <div class="schedule-actions">
+                <button class="btn btn-sm btn-primary" onclick="viewDetails('${schedule.id}')" title="View Details">
+                  <i class="fas fa-eye"></i>
+                </button>
+                ${schedule.status === 'pending' ? `
+                  <button class="btn btn-sm btn-danger" onclick="cancelSchedule('${schedule.id}')" title="Cancel">
+                    <i class="fas fa-times"></i>
+                  </button>
+                ` : ''}
+                <button class="btn btn-sm btn-secondary" onclick="deleteSchedule('${schedule.id}')" title="Delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="schedule-info">
+              <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <strong>${scheduleDate.toLocaleString()}</strong>
+              </div>
+              ${schedule.status === 'pending' ? `
+                <div class="info-item">
+                  <i class="fas fa-hourglass-half"></i>
+                  <span>${timeUntil}</span>
+                </div>
+              ` : ''}
+              <div class="info-item">
+                <i class="fas fa-users"></i>
+                <span>${schedule.recipientCount} recipients</span>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-connection"></i>
+                <span>${schedule.sessionId || 'Not set'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getTimeUntil(date) {
+      const now = new Date();
+      const diff = date - now;
+      
+      if (diff < 0) return 'Overdue';
+      
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      
+      if (days > 0) return `In ${days} day${days > 1 ? 's' : ''}`;
+      if (hours > 0) return `In ${hours} hour${hours > 1 ? 's' : ''}`;
+      if (minutes > 0) return `In ${minutes} minute${minutes > 1 ? 's' : ''}`;
+      return 'Soon';
+    }
+
+    function viewDetails(id) {
+      const schedule = schedules.find(s => s.id === id);
+      if (!schedule) return;
+      
+      const scheduleDate = new Date(schedule.scheduledTime);
+      
+      const content = `
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Status:</label>
+            <strong>${schedule.status}</strong>
+          </div>
+          <div class="detail-item">
+            <label>Scheduled Time:</label>
+            <strong>${scheduleDate.toLocaleString()}</strong>
+          </div>
+          <div class="detail-item">
+            <label>Session:</label>
+            <strong>${schedule.sessionId || 'Not set'}</strong>
+          </div>
+          <div class="detail-item">
+            <label>Message Type:</label>
+            <strong>${schedule.messageType || 'text'}</strong>
+          </div>
+          <div class="detail-item">
+            <label>Recipients:</label>
+            <strong>${schedule.recipientCount}</strong>
+          </div>
+          <div class="detail-item">
+            <label>Created:</label>
+            <strong>${new Date(schedule.createdAt).toLocaleString()}</strong>
+          </div>
+        </div>
+        <div class="detail-section">
+          <h4>Message Preview:</h4>
+          <div class="message-preview-box">
+            ${schedule.messagePreview || 'No preview'}
+          </div>
+        </div>
+        ${schedule.status === 'sent' ? `
+          <div class="detail-section">
+            <h4>Results:</h4>
+            <p>Sent: ${schedule.sentCount || 0} | Failed: ${schedule.failedCount || 0}</p>
+          </div>
+        ` : ''}
+      `;
+      
+      document.getElementById('detailContent').innerHTML = content;
+      document.getElementById('detailModal').classList.add('show');
+    }
+
+    function cancelSchedule(id) {
+      if (!confirm('Cancel this scheduled message?')) return;
+      
+      const index = schedules.findIndex(s => s.id === id);
+      if (index !== -1) {
+        schedules[index].status = 'cancelled';
+        storage.save('scheduledMessages', schedules);
+        loadSchedules();
+        showNotification('Schedule cancelled');
+      }
+    }
+
+    function deleteSchedule(id) {
+      if (!confirm('Delete this schedule?')) return;
+      
+      schedules = schedules.filter(s => s.id !== id);
+      storage.save('scheduledMessages', schedules);
+      loadSchedules();
+      updateStats();
+      showNotification('Schedule deleted');
+    }
+
+    function clearCompleted() {
+      const completed = schedules.filter(s => s.status === 'sent' || s.status === 'cancelled');
+      if (completed.length === 0) {
+        showNotification('No completed schedules to clear', 'info');
+        return;
+      }
+      
+      if (!confirm(`Clear ${completed.length} completed schedule(s)?`)) return;
+      
+      schedules = schedules.filter(s => s.status !== 'sent' && s.status !== 'cancelled');
+      storage.save('scheduledMessages', schedules);
+      loadSchedules();
+      updateStats();
+      showNotification(`${completed.length} schedule(s) cleared`);
+    }
+
+    function refreshScheduler() {
+      loadSchedules();
+      updateStats();
+      checkScheduler();
+      showNotification('Scheduler refreshed', 'success');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+    }
+  </script>
+  
+  <style>
+    .quick-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    
+    .scheduler-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px;
+      background: var(--light);
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    
+    .scheduler-status i {
+      font-size: 12px;
+    }
+    
+    .scheduler-status i.active {
+      color: var(--success);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .filter-tabs {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .filter-tabs .tab-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s;
+    }
+    
+    .filter-tabs .tab-btn:hover {
+      border-color: var(--primary);
+    }
+    
+    .filter-tabs .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .schedule-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+    
+    .schedule-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: var(--primary);
+    }
+    
+    .schedule-card.pending {
+      border-left: 4px solid #f59e0b;
+    }
+    
+    .schedule-card.sent {
+      border-left: 4px solid var(--success);
+      opacity: 0.7;
+    }
+    
+    .schedule-card.failed {
+      border-left: 4px solid var(--danger);
+    }
+    
+    .schedule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+    
+    .schedule-header h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+    
+    .schedule-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .schedule-actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .schedule-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    
+    .info-item i {
+      color: var(--primary);
+      width: 20px;
+    }
+    
+    .message-preview-box {
+      padding: 15px;
+      background: var(--light);
+      border-radius: 8px;
+      border-left: 4px solid var(--primary);
+      margin-top: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    
+    .detail-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .detail-section h4 {
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+  </style>
+  
+  <script src="sidebar.js"></script>
+</body>
+</html>

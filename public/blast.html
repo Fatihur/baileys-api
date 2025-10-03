@@ -3,33 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kirim Pesan Blast</title>
+    <title>Kirim Pesan Blast</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="improved-components.css">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="sidebar-categories.css">
 </head>
 <body>
-  <div class="sidebar">
-    <div class="logo">
-      <i class="fab fa-whatsapp"></i>
-      <h2>WA Blast</h2>
-    </div>
-    <nav>
-      <a href="index.html">
-        <i class="fas fa-home"></i> Dashboard
-      </a>
-      <a href="blast.html" class="active">
-        <i class="fas fa-paper-plane"></i> Blast Message
-      </a>
-      <a href="templates.html">
-        <i class="fas fa-file-alt"></i> Templates
-      </a>
-      <a href="history.html">
-        <i class="fas fa-history"></i> History
-      </a>
-    </nav>
-  </div>
-
-  <div class="main-content">
+  <div id="sidebar-container"></div>
+  <script src="sidebar-loader.js"></script>  <div class="main-content">
     <header>
       <h1>Blast Message</h1>
       <div class="user-info">
@@ -186,5 +169,13 @@
 
   <script src="config.js"></script>
   <script src="blast.js"></script>
-</body>
+  </body>
 </html>
+
+
+
+
+
+
+
+

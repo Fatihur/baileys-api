@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kirim Pesan Blast</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="sidebar-categories.css">
+  <link rel="stylesheet" href="recipient-modal-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <!-- Main -->
+      <div class="nav-category" id="catMain">
+        <div class="category-header" onclick="toggleCategory('catMain')" data-tooltip="Main">
+          <div class="category-title">
+            <i class="fas fa-home"></i>
+            <span>Main</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="nav-category" id="catWhatsApp">
+        <div class="category-header" onclick="toggleCategory('catWhatsApp')" data-tooltip="WhatsApp">
+          <div class="category-title">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="connections.html">
+            <i class="fas fa-link"></i>
+            <span>Koneksi</span>
+          </a>
+          <a href="messages.html" class="active">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pesan</span>
+          </a>
+          <a href="scheduled.html">
+            <i class="fas fa-clock"></i>
+            <span>Scheduled</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Management -->
+      <div class="nav-category" id="catManagement">
+        <div class="category-header" onclick="toggleCategory('catManagement')" data-tooltip="Management">
+          <div class="category-title">
+            <i class="fas fa-tasks"></i>
+            <span>Management</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="contacts.html">
+            <i class="fas fa-address-book"></i>
+            <span>Kontak</span>
+          </a>
+          <a href="templates.html">
+            <i class="fas fa-file-alt"></i>
+            <span>Template</span>
+          </a>
+          <a href="blacklist.html">
+            <i class="fas fa-ban"></i>
+            <span>Blacklist</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-category" id="catReports">
+        <div class="category-header" onclick="toggleCategory('catReports')" data-tooltip="Reports">
+          <div class="category-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="history.html">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="nav-category" id="catSystem">
+        <div class="category-header" onclick="toggleCategory('catSystem')" data-tooltip="System">
+          <div class="category-title">
+            <i class="fas fa-cog"></i>
+            <span>System</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="settings.html">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Kirim Pesan Blast</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="message-layout">
+        <!-- Left: Form -->
+        <div class="message-form">
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fas fa-edit"></i> Compose Pesan</h2>
+            </div>
+            <div class="card-body">
+              <!-- Session -->
+              <div class="form-group">
+                <label><i class="fas fa-link"></i> Pilih Koneksi</label>
+                <select id="sessionSelect" class="form-control">
+                  <option value="">Loading...</option>
+                </select>
+              </div>
+
+              <!-- Recipients -->
+              <div class="form-group">
+                <label><i class="fas fa-users"></i> Penerima</label>
+                <button type="button" class="btn btn-secondary btn-block" onclick="openRecipientModal()">
+                  <i class="fas fa-user-plus"></i> Pilih Penerima (<span id="recipientCountBtn">0</span>)
+                </button>
+                <small style="margin-top: 8px; display: block;">Klik untuk memilih kontak dari berbagai sumber</small>
+              </div>
+
+              <!-- Message Type -->
+              <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Tipe Pesan</label>
+                <div class="message-type-selector">
+                  <button class="type-btn active" data-type="text" onclick="selectMessageType('text')">
+                    <i class="fas fa-font"></i>
+                    <span>Text</span>
+                  </button>
+                  <button class="type-btn" data-type="image" onclick="selectMessageType('image')">
+                    <i class="fas fa-image"></i>
+                    <span>Image</span>
+                  </button>
+                  <button class="type-btn" data-type="document" onclick="selectMessageType('document')">
+                    <i class="fas fa-file"></i>
+                    <span>Document</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Text Message -->
+              <div id="textInput" class="form-group">
+                <label><i class="fas fa-comment"></i> Pesan</label>
+                
+                <!-- Toolbar -->
+                <div class="editor-toolbar">
+                  <button type="button" class="toolbar-btn" onclick="formatText('bold')" title="Bold">
+                    <i class="fas fa-bold"></i>
+                  </button>
+                  <button type="button" class="toolbar-btn" onclick="formatText('italic')" title="Italic">
+                    <i class="fas fa-italic"></i>
+                  </button>
+                  <button type="button" class="toolbar-btn" onclick="formatText('strike')" title="Strikethrough">
+                    <i class="fas fa-strikethrough"></i>
+                  </button>
+                  <button type="button" class="toolbar-btn" onclick="formatText('mono')" title="Monospace">
+                    <i class="fas fa-code"></i>
+                  </button>
+                  <div class="toolbar-divider"></div>
+                  <div class="variable-dropdown">
+                    <button type="button" class="toolbar-btn variable-btn" onclick="toggleVariableMenu()">
+                      <i class="fas fa-tag"></i> Variabel <i class="fas fa-caret-down"></i>
+                    </button>
+                    <div id="variableMenu" class="variable-menu" style="display: none;">
+                      <button type="button" onclick="insertVariable('{nama}')">
+                        <i class="fas fa-user"></i> {nama}
+                      </button>
+                      <button type="button" onclick="insertVariable('{nomor}')">
+                        <i class="fas fa-phone"></i> {nomor}
+                      </button>
+                      <button type="button" onclick="insertVariable('{email}')">
+                        <i class="fas fa-envelope"></i> {email}
+                      </button>
+                      <button type="button" onclick="insertVariable('{custom1}')">
+                        <i class="fas fa-tag"></i> {custom1}
+                      </button>
+                      <button type="button" onclick="insertVariable('{custom2}')">
+                        <i class="fas fa-tag"></i> {custom2}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <textarea id="messageText" class="form-control editor-textarea" rows="8" placeholder="Tulis pesan Anda di sini...&#10;&#10;Contoh: Halo {nama}, terima kasih sudah menghubungi kami." oninput="updateCharCount(); updatePreview();"></textarea>
+                
+                <div class="editor-footer">
+                  <div class="char-count"><span id="charCount">0</span> karakter</div>
+                  <div class="variable-hints">
+                    <small><i class="fas fa-lightbulb"></i> Klik tombol "Variabel" untuk personalisasi pesan</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Image Input -->
+              <div id="imageInput" class="form-group" style="display: none;">
+                <label><i class="fas fa-image"></i> Upload Gambar</label>
+                <div class="file-upload-box">
+                  <input type="file" id="imageFile" accept="image/*" onchange="handleImageUpload(event)" style="display: none;">
+                  <label for="imageFile" class="upload-file-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span id="imageFileName">Pilih file gambar (JPG, PNG, GIF)</span>
+                  </label>
+                </div>
+                <div id="imagePreviewContainer" style="display: none; margin-top: 15px;">
+                  <img id="imagePreview" src="" style="max-width: 200px; border-radius: 8px;">
+                  <button type="button" class="btn btn-sm btn-danger" onclick="clearImage()" style="margin-top: 10px;">
+                    <i class="fas fa-times"></i> Hapus
+                  </button>
+                </div>
+                <label style="margin-top: 15px;"><i class="fas fa-comment"></i> Caption</label>
+                <div class="caption-toolbar">
+                  <button type="button" class="toolbar-btn-sm" onclick="insertVariableToCaption('{nama}')">
+                    <i class="fas fa-user"></i> {nama}
+                  </button>
+                  <button type="button" class="toolbar-btn-sm" onclick="insertVariableToCaption('{nomor}')">
+                    <i class="fas fa-phone"></i> {nomor}
+                  </button>
+                </div>
+                <textarea id="imageCaption" class="form-control" rows="3" placeholder="Caption gambar... (support variabel)" oninput="updatePreview()"></textarea>
+              </div>
+
+              <!-- Document Input -->
+              <div id="documentInput" class="form-group" style="display: none;">
+                <label><i class="fas fa-file"></i> Upload Dokumen</label>
+                <div class="file-upload-box">
+                  <input type="file" id="documentFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" onchange="handleDocumentUpload(event)" style="display: none;">
+                  <label for="documentFile" class="upload-file-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span id="documentFileName">Pilih file dokumen (PDF, Word, Excel, etc)</span>
+                  </label>
+                </div>
+                <div id="documentPreviewContainer" style="display: none; margin-top: 15px;">
+                  <div class="document-info">
+                    <i class="fas fa-file-alt" style="font-size: 48px; color: #667eea;"></i>
+                    <p id="docInfo"></p>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="clearDocument()">
+                      <i class="fas fa-times"></i> Hapus
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Delay -->
+              <div class="form-group">
+                <label><i class="fas fa-clock"></i> Jeda Antar Pesan</label>
+                <div class="delay-selector">
+                  <input type="range" id="delayRange" min="1" max="10" value="2" oninput="updateDelayLabel()">
+                  <span id="delayLabel">2 detik</span>
+                </div>
+                <small>Recommended: 2-5 detik untuk menghindari spam detection</small>
+              </div>
+
+              <!-- Daily Limit Status -->
+              <div id="dailyLimitStatus" class="daily-limit-info" style="margin-bottom: 15px; padding: 10px; background: var(--light); border-radius: 8px; text-align: center; font-size: 13px;">
+                <i class="fas fa-info-circle"></i> Pilih koneksi untuk melihat kuota harian
+              </div>
+
+              <!-- Send Buttons -->
+              <div class="send-buttons-group">
+                <button class="btn btn-primary btn-block btn-lg" onclick="sendBlast()">
+                  <i class="fas fa-paper-plane"></i> Kirim Sekarang
+                </button>
+                
+                <button class="btn btn-secondary btn-block btn-lg" onclick="openScheduleModal()" style="margin-top: 10px;">
+                  <i class="fas fa-clock"></i> Schedule Blast
+                </button>
+              </div>
+              
+              <button class="btn btn-warning btn-block" onclick="retryFailedMessages()" style="margin-top: 10px;">
+                <i class="fas fa-redo"></i> Retry Failed Messages
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Preview & Status -->
+        <div class="message-sidebar">
+          <!-- Recipients Preview -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-users"></i> Penerima</h3>
+              <span class="badge badge-primary" id="recipientCount">0</span>
+            </div>
+            <div class="card-body">
+              <div id="recipientsList" class="recipients-preview">
+                <p class="text-muted">Belum ada penerima</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message Preview -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-eye"></i> Preview</h3>
+            </div>
+            <div class="card-body">
+              <div id="messagePreview" class="whatsapp-preview">
+                <div class="wa-bubble">
+                  <p class="text-muted">Preview pesan akan muncul di sini...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress -->
+          <div id="progressCard" class="card" style="display: none;">
+            <div class="card-header">
+              <h3><i class="fas fa-tasks"></i> Progress</h3>
+            </div>
+            <div class="card-body">
+              <div class="progress-container">
+                <div class="progress-bar">
+                  <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                  <span id="progressPercent">0%</span>
+                  <span id="progressCount">0 / 0</span>
+                </div>
+              </div>
+              <div id="progressLogs" class="progress-logs"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipient Modal -->
+  <div id="recipientModal" class="modal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2><i class="fas fa-users"></i> Pilih Penerima</h2>
+        <span class="close" onclick="closeRecipientModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="tab-btn active" onclick="switchRecipientTab('manual')">
+            <i class="fas fa-keyboard"></i> Manual
+          </button>
+          <button class="tab-btn" onclick="switchRecipientTab('contacts')">
+            <i class="fas fa-address-book"></i> Kontak
+          </button>
+          <button class="tab-btn" onclick="switchRecipientTab('groups')">
+            <i class="fas fa-users"></i> Grup
+          </button>
+          <button class="tab-btn" onclick="switchRecipientTab('csv')">
+            <i class="fas fa-file-csv"></i> CSV
+          </button>
+        </div>
+
+        <!-- Manual Tab -->
+        <div id="manualTab" class="tab-content active">
+          <div class="form-group">
+            <label>Masukkan nomor (satu per baris)</label>
+            <textarea id="manualNumbersModal" class="form-control" rows="6" placeholder="6281234567890,Budi,budi@email.com&#10;6281234567891,Ani,ani@email.com&#10;6281234567892"></textarea>
+            <small>Format: <code>nomor,nama,email,custom1,custom2</code> atau hanya nomor saja</small>
+          </div>
+          <button class="btn btn-primary" onclick="addManualRecipients()">
+            <i class="fas fa-plus"></i> Tambah Penerima
+          </button>
+        </div>
+
+        <!-- Contacts Tab -->
+        <div id="contactsTab" class="tab-content" style="display: none;">
+          <div class="search-box" style="margin-bottom: 15px;">
+            <input type="text" id="contactSearch" class="form-control" placeholder="Cari kontak..." onkeyup="filterContacts()">
+          </div>
+          <div id="contactsList" class="contacts-list" style="max-height: 400px; overflow-y: auto;">
+            <p class="text-muted">Loading kontak...</p>
+          </div>
+        </div>
+
+        <!-- Groups Tab -->
+        <div id="groupsTab" class="tab-content" style="display: none;">
+          <div id="groupsList" class="groups-list-modal">
+            <p class="text-muted">Loading grup...</p>
+          </div>
+        </div>
+
+        <!-- CSV Tab -->
+        <div id="csvTab" class="tab-content" style="display: none;">
+          <div class="upload-zone">
+            <input type="file" id="csvFileModal" accept=".csv,.txt" onchange="handleCSVUpload(event)" style="display: none;">
+            <label for="csvFileModal" class="upload-label">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <span>Klik untuk upload CSV</span>
+              <small>Format: nomor,nama,email,custom1,custom2</small>
+            </label>
+          </div>
+        </div>
+
+        <!-- Selected Recipients -->
+        <div class="selected-recipients" style="margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--border);">
+          <h3>Penerima Terpilih (<span id="selectedCount">0</span>)</h3>
+          <div id="selectedRecipientsList" class="selected-list" style="max-height: 150px; overflow-y: auto;">
+            <p class="text-muted">Belum ada penerima dipilih</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeRecipientModal()">Batal</button>
+        <button class="btn btn-danger" onclick="clearAllRecipients()">
+          <i class="fas fa-trash"></i> Hapus Semua
+        </button>
+        <button class="btn btn-primary" onclick="confirmRecipients()">
+          <i class="fas fa-check"></i> Konfirmasi (<span id="confirmCount">0</span>)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Modal -->
+  <div id="scheduleModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-clock"></i> Schedule Blast</h2>
+        <span class="close" onclick="closeScheduleModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label><i class="fas fa-calendar"></i> Select Date & Time</label>
+          <input type="datetime-local" id="scheduleDateTime" class="form-control" min="">
+          <small>Choose when this blast should be sent</small>
+        </div>
+        
+        <div class="schedule-summary">
+          <h4>Blast Summary:</h4>
+          <div class="summary-item">
+            <label>Session:</label>
+            <span id="scheduleSummarySession">-</span>
+          </div>
+          <div class="summary-item">
+            <label>Recipients:</label>
+            <span id="scheduleSummaryRecipients">0</span>
+          </div>
+          <div class="summary-item">
+            <label>Message Type:</label>
+            <span id="scheduleSummaryType">-</span>
+          </div>
+          <div class="summary-item">
+            <label>Schedule Time:</label>
+            <span id="scheduleSummaryTime">-</span>
+          </div>
+        </div>
+
+        <div class="alert alert-info" style="margin-top: 15px;">
+          <i class="fas fa-info-circle"></i>
+          <strong>Note:</strong> Scheduled messages will be sent automatically at the specified time. Make sure your browser is open and this tab is active.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeScheduleModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmSchedule()">
+          <i class="fas fa-check"></i> Schedule Blast
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="messages.js"></script>
+  <script src="recipient-modal.js"></script>
+  <script src="sidebar.js"></script>
+  
+  <style>
+    .send-buttons-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .send-buttons-group .btn {
+      margin-top: 0 !important;
+    }
+    
+    .schedule-summary {
+      padding: 15px;
+      background: var(--light);
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    
+    .schedule-summary h4 {
+      margin: 0 0 15px 0;
+      color: var(--text-primary);
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+    
+    .summary-item label {
+      font-weight: 600;
+      color: #666;
+    }
+    
+    .summary-item span {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    .alert-info {
+      background: #dbeafe;
+      border: 1px solid #3b82f6;
+      color: #1e40af;
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    
+    @media (max-width: 768px) {
+      .send-buttons-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  
+  <script>
+    // Schedule Modal Functions
+    function openScheduleModal() {
+      // Validate
+      const sessionId = document.getElementById('sessionSelect').value;
+      const recipients = selectedRecipients;
+      const messageText = document.getElementById('messageText').value.trim();
+      
+      if (!sessionId) {
+        showNotification('Pilih koneksi terlebih dahulu!', 'error');
+        return;
+      }
+      
+      if (recipients.length === 0) {
+        showNotification('Pilih minimal 1 penerima!', 'error');
+        return;
+      }
+      
+      if (currentMessageType === 'text' && !messageText) {
+        showNotification('Tulis pesan terlebih dahulu!', 'error');
+        return;
+      }
+      
+      // Set minimum datetime to now
+      const now = new Date();
+      now.setMinutes(now.getMinutes() + 5); // Minimum 5 minutes from now
+      const minDateTime = now.toISOString().slice(0, 16);
+      document.getElementById('scheduleDateTime').min = minDateTime;
+      document.getElementById('scheduleDateTime').value = minDateTime;
+      
+      // Update summary
+      updateScheduleSummary();
+      
+      // Show modal
+      document.getElementById('scheduleModal').classList.add('show');
+    }
+    
+    function closeScheduleModal() {
+      document.getElementById('scheduleModal').classList.remove('show');
+    }
+    
+    function updateScheduleSummary() {
+      const sessionId = document.getElementById('sessionSelect').value;
+      const sessionText = document.getElementById('sessionSelect').selectedOptions[0]?.text || '-';
+      const recipients = selectedRecipients.length;
+      const messageType = currentMessageType;
+      const dateTime = document.getElementById('scheduleDateTime').value;
+      
+      document.getElementById('scheduleSummarySession').textContent = sessionText;
+      document.getElementById('scheduleSummaryRecipients').textContent = recipients;
+      document.getElementById('scheduleSummaryType').textContent = messageType;
+      
+      if (dateTime) {
+        const date = new Date(dateTime);
+        document.getElementById('scheduleSummaryTime').textContent = date.toLocaleString();
+      } else {
+        document.getElementById('scheduleSummaryTime').textContent = '-';
+      }
+    }
+    
+    // Update summary when datetime changes
+    document.addEventListener('DOMContentLoaded', () => {
+      const dateTimeInput = document.getElementById('scheduleDateTime');
+      if (dateTimeInput) {
+        dateTimeInput.addEventListener('change', updateScheduleSummary);
+      }
+    });
+    
+    function confirmSchedule() {
+      const scheduleDateTime = document.getElementById('scheduleDateTime').value;
+      
+      if (!scheduleDateTime) {
+        showNotification('Pilih tanggal & waktu!', 'error');
+        return;
+      }
+      
+      const scheduleDate = new Date(scheduleDateTime);
+      const now = new Date();
+      
+      if (scheduleDate <= now) {
+        showNotification('Waktu schedule harus di masa depan!', 'error');
+        return;
+      }
+      
+      // Prepare schedule data
+      const sessionId = document.getElementById('sessionSelect').value;
+      const messageText = document.getElementById('messageText').value.trim();
+      const imageCaption = document.getElementById('imageCaption')?.value.trim() || '';
+      
+      const schedule = {
+        id: 'schedule_' + Date.now(),
+        sessionId: sessionId,
+        message: currentMessageType === 'text' ? messageText : imageCaption,
+        messageType: currentMessageType,
+        messagePreview: (currentMessageType === 'text' ? messageText : imageCaption).substring(0, 100),
+        recipients: selectedRecipients.map(r => r.number),
+        recipientCount: selectedRecipients.length,
+        scheduledTime: scheduleDate.toISOString(),
+        createdAt: new Date().toISOString(),
+        status: 'pending',
+        mediaUrl: currentImageBase64 || currentDocumentBase64 || null
+      };
+      
+      // Save to storage
+      const schedules = storage.get('scheduledMessages') || [];
+      schedules.push(schedule);
+      storage.save('scheduledMessages', schedules);
+      
+      // Close modal
+      closeScheduleModal();
+      
+      // Show success
+      showNotification(`✅ Blast scheduled for ${scheduleDate.toLocaleString()}!`, 'success');
+      
+      // Redirect to scheduled page
+      setTimeout(() => {
+        if (confirm('Lihat scheduled blasts sekarang?')) {
+          window.location.href = 'scheduled.html';
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

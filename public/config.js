@@ -82,6 +82,103 @@ const api = {
       method: 'POST',
       body: JSON.stringify({ sessionId, recipients, message, delay })
     });
+  },
+
+  // Message Management
+  async getChats(sessionId) {
+    return this.request(`/api/chats/${sessionId}`);
+  },
+
+  async getMessages(sessionId, jid, limit = 50) {
+    return this.request(`/api/messages/${sessionId}/${jid}?limit=${limit}`);
+  },
+
+  async markAsRead(sessionId, jid, messageId) {
+    return this.request('/api/message/read', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, jid, messageId })
+    });
+  },
+
+  async replyMessage(sessionId, jid, messageId, replyText) {
+    return this.request('/api/message/reply', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, jid, messageId, replyText })
+    });
+  },
+
+  async forwardMessage(sessionId, fromJid, messageId, toJid) {
+    return this.request('/api/message/forward', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, fromJid, messageId, toJid })
+    });
+  },
+
+  async deleteMessage(sessionId, jid, messageId, forEveryone = false) {
+    return this.request('/api/message/delete', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, jid, messageId, forEveryone })
+    });
+  },
+
+  async pinMessage(sessionId, jid, messageId, pin = true) {
+    return this.request('/api/message/pin', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, jid, messageId, pin })
+    });
+  },
+
+  // Presence & Status
+  async setPresence(sessionId, jid, presence) {
+    return this.request('/api/presence/set', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, jid, presence })
+    });
+  },
+
+  async getPresence(sessionId, jid) {
+    return this.request(`/api/presence/${sessionId}/${jid}`);
+  },
+
+  async sendTyping(sessionId, jid, isTyping = true) {
+    return this.request('/api/presence/typing', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, jid, isTyping })
+    });
+  },
+
+  async getStatus(sessionId, jid) {
+    return this.request(`/api/status/${sessionId}/${jid}`);
+  },
+
+  async uploadStatus(sessionId, mediaBase64, mediaType, caption) {
+    return this.request('/api/status/upload', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, mediaBase64, mediaType, caption })
+    });
+  },
+
+  async viewStatus(sessionId, jid, statusId) {
+    return this.request('/api/status/view', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, jid, statusId })
+    });
+  },
+
+  // Contacts
+  async getContacts(sessionId) {
+    return this.request(`/api/contacts/${sessionId}`);
+  },
+
+  async checkNumberRegistered(sessionId, phoneNumber) {
+    return this.request('/api/contact/check', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, phoneNumber })
+    });
+  },
+
+  async getContactInfo(sessionId, jid) {
+    return this.request(`/api/contact/info/${sessionId}/${jid}`);
   }
 };
 

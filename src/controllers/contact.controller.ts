@@ -39,6 +39,28 @@ export class ContactController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async getContactInfo(req: Request, res: Response) {
+    try {
+      const { sessionId, jid } = req.params;
+
+      if (!sessionId || !jid) {
+        return res.status(400).json({
+          error: 'sessionId and jid are required'
+        });
+      }
+
+      const contactInfo = await whatsappService.getContactInfo(sessionId, jid);
+
+      res.json({
+        success: true,
+        contact: contactInfo
+      });
+    } catch (error: any) {
+      logger.error('Error getting contact info:', error);
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 export const contactController = new ContactController();

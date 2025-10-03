@@ -59,6 +59,27 @@ app.get('/', (req, res) => {
         'POST /api/message/contact': 'Send contact',
         'POST /api/message/bulk': 'Send bulk messages'
       },
+      inbox: {
+        'GET /api/messages/:sessionId/:jid': 'Get messages from a chat',
+        'GET /api/chats/:sessionId': 'Get all chats',
+        'POST /api/message/read': 'Mark message as read',
+        'POST /api/message/reply': 'Reply to a message',
+        'POST /api/message/forward': 'Forward message to another chat',
+        'POST /api/message/delete': 'Delete message',
+        'POST /api/message/pin': 'Pin/unpin message'
+      },
+      presence: {
+        'POST /api/presence/set': 'Set presence (available/unavailable)',
+        'GET /api/presence/:sessionId/:jid': 'Get presence info',
+        'POST /api/presence/typing': 'Send typing indicator',
+        'POST /api/presence/recording': 'Send recording indicator'
+      },
+      status: {
+        'POST /api/status/upload': 'Upload WhatsApp status/story',
+        'GET /api/status/:sessionId': 'Get status updates',
+        'POST /api/status/view': 'Mark status as viewed',
+        'POST /api/status/delete': 'Delete own status'
+      },
       groups: {
         'GET /api/group/:sessionId/list': 'Get all groups',
         'POST /api/group/create': 'Create new group',
@@ -68,7 +89,8 @@ app.get('/', (req, res) => {
       },
       contacts: {
         'GET /api/contact/:sessionId/list': 'Get all contacts',
-        'POST /api/contact/check': 'Check if number is registered on WhatsApp'
+        'POST /api/contact/check': 'Check if number is registered on WhatsApp',
+        'GET /api/contact/info/:sessionId/:jid': 'Get contact information'
       }
     },
     authentication: 'Add X-API-KEY header or apiKey query parameter'

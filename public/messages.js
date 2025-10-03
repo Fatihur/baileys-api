@@ -1,10 +1,18 @@
 // Messages Page JavaScript
 
-let recipients = [];
-let currentMessageType = 'text';
-let uploadedImageFile = null;
-let uploadedDocumentFile = null;
-let recipientsData = []; // Store full recipient data with variables
+// Make these global so they can be accessed from other scripts
+window.recipients = [];
+window.recipientsData = [];
+window.currentMessageType = 'text';
+window.uploadedImageFile = null;
+window.uploadedDocumentFile = null;
+
+// Local references for convenience
+let recipients = window.recipients;
+let currentMessageType = window.currentMessageType;
+let uploadedImageFile = window.uploadedImageFile;
+let uploadedDocumentFile = window.uploadedDocumentFile;
+let recipientsData = window.recipientsData;
 
 document.addEventListener('DOMContentLoaded', () => {
   loadSessions();

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - WhatsApp Blast</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="sidebar-categories.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fab fa-whatsapp"></i>
+      <h2>WA Blast</h2>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav>
+      <!-- Main -->
+      <div class="nav-category" id="catMain">
+        <div class="category-header" onclick="toggleCategory('catMain')" data-tooltip="Main">
+          <div class="category-title">
+            <i class="fas fa-home"></i>
+            <span>Main</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="index.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="nav-category" id="catWhatsApp">
+        <div class="category-header" onclick="toggleCategory('catWhatsApp')" data-tooltip="WhatsApp">
+          <div class="category-title">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="connections.html">
+            <i class="fas fa-link"></i>
+            <span>Koneksi</span>
+          </a>
+          <a href="messages.html">
+            <i class="fas fa-paper-plane"></i>
+            <span>Kirim Pesan</span>
+          </a>
+          <a href="scheduled.html">
+            <i class="fas fa-clock"></i>
+            <span>Scheduled</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Management -->
+      <div class="nav-category" id="catManagement">
+        <div class="category-header" onclick="toggleCategory('catManagement')" data-tooltip="Management">
+          <div class="category-title">
+            <i class="fas fa-tasks"></i>
+            <span>Management</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="contacts.html">
+            <i class="fas fa-address-book"></i>
+            <span>Kontak</span>
+          </a>
+          <a href="templates.html">
+            <i class="fas fa-file-alt"></i>
+            <span>Template</span>
+          </a>
+          <a href="blacklist.html">
+            <i class="fas fa-ban"></i>
+            <span>Blacklist</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="nav-category" id="catReports">
+        <div class="category-header" onclick="toggleCategory('catReports')" data-tooltip="Reports">
+          <div class="category-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="history.html">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="nav-category" id="catSystem">
+        <div class="category-header" onclick="toggleCategory('catSystem')" data-tooltip="System">
+          <div class="category-title">
+            <i class="fas fa-cog"></i>
+            <span>System</span>
+          </div>
+          <i class="fas fa-chevron-right category-icon"></i>
+        </div>
+        <div class="category-items">
+          <a href="settings.html" class="active">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="header-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Settings</h1>
+      </div>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span class="username">Admin</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Blast Settings -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-paper-plane"></i> Blast Settings</h2>
+          <button class="btn btn-primary" onclick="saveSettings()">
+            <i class="fas fa-save"></i> Save Settings
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="settings-grid">
+            <div class="setting-item">
+              <label>
+                <i class="fas fa-calculator"></i> Daily Message Limit (per session)
+              </label>
+              <input type="number" id="dailyLimit" class="form-control" value="500" min="50" max="5000">
+              <small>Recommended: 200-500 for new accounts, up to 1000 for established</small>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                <i class="fas fa-clock"></i> Minimum Delay (seconds)
+              </label>
+              <input type="number" id="minDelay" class="form-control" value="5" min="1" max="30">
+              <small>Minimum delay between messages</small>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                <i class="fas fa-clock"></i> Maximum Delay (seconds)
+              </label>
+              <input type="number" id="maxDelay" class="form-control" value="15" min="5" max="60">
+              <small>Maximum delay between messages</small>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                <i class="fas fa-history"></i> History Retention (days)
+              </label>
+              <input type="number" id="historyRetention" class="form-control" value="30" min="7" max="365">
+              <small>Auto-delete history older than this</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Display Settings -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-palette"></i> Display Settings</h2>
+        </div>
+        <div class="card-body">
+          <div class="settings-grid">
+            <div class="setting-item">
+              <label>
+                <i class="fas fa-moon"></i> Theme
+              </label>
+              <select id="theme" class="form-control">
+                <option value="light">Light</option>
+                <option value="dark">Dark (Coming Soon)</option>
+              </select>
+              <small>Choose your preferred theme</small>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                <i class="fas fa-bell"></i> Notifications
+              </label>
+              <select id="notifications" class="form-control">
+                <option value="all">All Notifications</option>
+                <option value="important">Important Only</option>
+                <option value="none">None</option>
+              </select>
+              <small>Control notification preferences</small>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                <i class="fas fa-language"></i> Language
+              </label>
+              <select id="language" class="form-control">
+                <option value="id">Bahasa Indonesia</option>
+                <option value="en">English (Coming Soon)</option>
+              </select>
+              <small>Select interface language</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-database"></i> Data Management</h2>
+        </div>
+        <div class="card-body">
+          <div class="data-management-grid">
+            <div class="data-item">
+              <i class="fas fa-download"></i>
+              <h4>Export All Data</h4>
+              <p>Download all your data (contacts, templates, settings, history)</p>
+              <button class="btn btn-primary" onclick="exportAllData()">
+                <i class="fas fa-download"></i> Export
+              </button>
+            </div>
+
+            <div class="data-item">
+              <i class="fas fa-upload"></i>
+              <h4>Import Data</h4>
+              <p>Restore from previously exported data</p>
+              <input type="file" id="importFile" accept=".json" onchange="importData(event)" style="display: none;">
+              <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                <i class="fas fa-upload"></i> Import
+              </button>
+            </div>
+
+            <div class="data-item warning-item">
+              <i class="fas fa-trash-alt"></i>
+              <h4>Clear All Data</h4>
+              <p>Delete all contacts, templates, and history (cannot be undone!)</p>
+              <button class="btn btn-danger" onclick="clearAllData()">
+                <i class="fas fa-exclamation-triangle"></i> Clear All
+              </button>
+            </div>
+
+            <div class="data-item">
+              <i class="fas fa-redo"></i>
+              <h4>Reset Settings</h4>
+              <p>Reset all settings to default values</p>
+              <button class="btn btn-warning" onclick="resetSettings()">
+                <i class="fas fa-redo"></i> Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Info -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-info-circle"></i> System Information</h2>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-row">
+              <label>Version:</label>
+              <strong>2.0.0</strong>
+            </div>
+            <div class="info-row">
+              <label>Total Contacts:</label>
+              <strong id="totalContacts">0</strong>
+            </div>
+            <div class="info-row">
+              <label>Total Groups:</label>
+              <strong id="totalGroups">0</strong>
+            </div>
+            <div class="info-row">
+              <label>Total Templates:</label>
+              <strong id="totalTemplates">0</strong>
+            </div>
+            <div class="info-row">
+              <label>Blacklist Count:</label>
+              <strong id="blacklistCount">0</strong>
+            </div>
+            <div class="info-row">
+              <label>History Count:</label>
+              <strong id="historyCount">0</strong>
+            </div>
+            <div class="info-row">
+              <label>Storage Used:</label>
+              <strong id="storageUsed">0 KB</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    let settings = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      loadSystemInfo();
+    });
+
+    function loadSettings() {
+      settings = storage.get('appSettings') || getDefaultSettings();
+      
+      // Load values
+      document.getElementById('dailyLimit').value = settings.dailyLimit || 500;
+      document.getElementById('minDelay').value = settings.minDelay || 5;
+      document.getElementById('maxDelay').value = settings.maxDelay || 15;
+      document.getElementById('historyRetention').value = settings.historyRetention || 30;
+      document.getElementById('theme').value = settings.theme || 'light';
+      document.getElementById('notifications').value = settings.notifications || 'all';
+      document.getElementById('language').value = settings.language || 'id';
+    }
+
+    function getDefaultSettings() {
+      return {
+        dailyLimit: 500,
+        minDelay: 5,
+        maxDelay: 15,
+        historyRetention: 30,
+        theme: 'light',
+        notifications: 'all',
+        language: 'id'
+      };
+    }
+
+    function saveSettings() {
+      settings = {
+        dailyLimit: parseInt(document.getElementById('dailyLimit').value),
+        minDelay: parseInt(document.getElementById('minDelay').value),
+        maxDelay: parseInt(document.getElementById('maxDelay').value),
+        historyRetention: parseInt(document.getElementById('historyRetention').value),
+        theme: document.getElementById('theme').value,
+        notifications: document.getElementById('notifications').value,
+        language: document.getElementById('language').value
+      };
+      
+      // Validation
+      if (settings.minDelay >= settings.maxDelay) {
+        showNotification('Min delay must be less than max delay', 'error');
+        return;
+      }
+      
+      storage.save('appSettings', settings);
+      showNotification('Settings saved successfully!', 'success');
+      
+      // Note: To apply new daily limits and delays, they need to be used in messages.js
+      // For now, this is just storing preferences
+    }
+
+    function resetSettings() {
+      if (!confirm('Reset all settings to default?')) return;
+      
+      settings = getDefaultSettings();
+      loadSettings();
+      storage.save('appSettings', settings);
+      showNotification('Settings reset to default', 'success');
+    }
+
+    function exportAllData() {
+      const allData = {
+        version: '2.0.0',
+        exportDate: new Date().toISOString(),
+        contacts: storage.get('contacts') || [],
+        contactGroups: storage.get('contactGroups') || [],
+        templates: storage.get('templates') || [],
+        blacklist: storage.get('blacklist') || [],
+        whitelist: storage.get('whitelist') || [],
+        settings: storage.get('appSettings') || {},
+        history: storage.get('blastHistory') || []
+      };
+      
+      const json = JSON.stringify(allData, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `wa-blast-data-${Date.now()}.json`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      
+      showNotification('Data exported successfully!', 'success');
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          
+          if (!confirm(`Import data from ${new Date(data.exportDate).toLocaleString()}? This will overwrite existing data!`)) {
+            return;
+          }
+          
+          // Import all data
+          if (data.contacts) storage.save('contacts', data.contacts);
+          if (data.contactGroups) storage.save('contactGroups', data.contactGroups);
+          if (data.templates) storage.save('templates', data.templates);
+          if (data.blacklist) storage.save('blacklist', data.blacklist);
+          if (data.whitelist) storage.save('whitelist', data.whitelist);
+          if (data.settings) storage.save('appSettings', data.settings);
+          if (data.history) storage.save('blastHistory', data.history);
+          
+          showNotification('Data imported successfully! Page will reload...', 'success');
+          setTimeout(() => location.reload(), 2000);
+        } catch (error) {
+          showNotification('Invalid data file!', 'error');
+        }
+      };
+      
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function clearAllData() {
+      const confirm1 = confirm('⚠️ WARNING: This will delete ALL your data!\n\nContacts, Templates, History, Blacklist, etc.\n\nContinue?');
+      if (!confirm1) return;
+      
+      const confirm2 = confirm('Are you ABSOLUTELY sure? This CANNOT be undone!');
+      if (!confirm2) return;
+      
+      // Clear everything except settings
+      storage.remove('contacts');
+      storage.remove('contactGroups');
+      storage.remove('templates');
+      storage.remove('blacklist');
+      storage.remove('whitelist');
+      storage.remove('blastHistory');
+      storage.remove('failedMessages');
+      storage.remove('stats');
+      
+      // Clear daily counters
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('daily_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      
+      showNotification('All data cleared! Page will reload...', 'success');
+      setTimeout(() => location.reload(), 2000);
+    }
+
+    function loadSystemInfo() {
+      const contacts = storage.get('contacts') || [];
+      const groups = storage.get('contactGroups') || [];
+      const templates = storage.get('templates') || [];
+      const blacklist = storage.get('blacklist') || [];
+      const history = storage.get('blastHistory') || [];
+      
+      document.getElementById('totalContacts').textContent = contacts.length;
+      document.getElementById('totalGroups').textContent = groups.length;
+      document.getElementById('totalTemplates').textContent = templates.length;
+      document.getElementById('blacklistCount').textContent = blacklist.length;
+      document.getElementById('historyCount').textContent = history.length;
+      
+      // Calculate storage size
+      let totalSize = 0;
+      for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          totalSize += localStorage[key].length + key.length;
+        }
+      }
+      document.getElementById('storageUsed').textContent = (totalSize / 1024).toFixed(2) + ' KB';
+    }
+  </script>
+
+  <style>
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .setting-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .setting-item label {
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .setting-item small {
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .data-management-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .data-item {
+      text-align: center;
+      padding: 30px 20px;
+      background: var(--light);
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      transition: all 0.3s;
+    }
+    
+    .data-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .data-item.warning-item {
+      background: #fef3c7;
+      border-color: #f59e0b;
+    }
+    
+    .data-item i {
+      font-size: 48px;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    
+    .data-item.warning-item i {
+      color: #ef4444;
+    }
+    
+    .data-item h4 {
+      margin: 10px 0;
+      color: var(--text-primary);
+    }
+    
+    .data-item p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    .info-grid {
+      display: grid;
+      gap: 15px;
+    }
+    
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      background: var(--light);
+      border-radius: 8px;
+    }
+    
+    .info-row label {
+      font-weight: 500;
+      color: #666;
+    }
+    
+    .info-row strong {
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+  </style>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>
